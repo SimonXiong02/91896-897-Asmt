@@ -4,13 +4,8 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
 import uuid
-from Login_Screen import *
+from Login_Screen import LoginWindow
 
-
-USERS = {
-    "admin": "1234",
-    "staff": "noob1234"
-}
 
 BG = "#2b2b2b"
 FG = "#ffffff"
@@ -92,9 +87,13 @@ class CoffeeOS:
                     col = 0
                     row += 1
 
-
+# -------- START THE OPERATION SYSTEM ---------
+def main_app():
+    root = tk.TK()
+    app = CoffeeOS(root)
+    root.mainloop()
 
 if __name__ == "__main__":
     login_root = tk.Tk()
-    LoginWindow(login_root)
+    LoginWindow(login_root, main_app)
     login_root.mainloop()
