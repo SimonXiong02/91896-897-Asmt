@@ -87,9 +87,74 @@ class CoffeeOS:
                     col = 0
                     row += 1
 
+        tk.Label(right, text="Order", bg=CARD, fg=FG, font=("Arial", 16)).pack(pady=10)
+
+        control_frame = tk.Frame(right, bg=CARD)
+        control_frame.pack(pady=5)
+
+        self.size_var = tk.StringVar(value="Medium")
+        self.qty_var = tk.IntVar(value=1)
+
+        ttk.Combobox(control_frame, textvariable=self.size_var, values=list(SIZES.keys()), width=10).grid(row=0, column=0, padx=5)
+        ttk.Spinbox(control_frame, from_=1, to=10, textvariable=self.qty_var, width=5).grid(row=0, column=1, padx=5)
+
+        self.tree = ttk.Treeview(right, columns=("Items", "Qty", "Price"), show="headings", height=15)
+        self.tree.heading("Item", text="Item")
+        self.tree.heading("Qty", text="Qty")
+        self.tree.heading("Price", text="Price")
+        self.tree.pack(padx=10, pady=10)
+
+        self.total_label = tk.Label(right, text="Total: $0.00", bg=CARD, fg=FG, font=("Arial", 16))
+        self.total_label.pack(pady=5)
+
+        tk.Button(right, text="Checkout", bg=ACCENT, command=self.checkout).pack(fill="x", padx=10, pady=5)
+        tk.Button(right, text="Clear", command=self.clear_cart).pack(fill="x", padx=10)
+
+    def select_item(self, item, base_price):
+        size = self.size_var.get()
+        qty = self.qty_var.get()
+
+        price = base_price * SIZES[size] * qty
+        self.cart.append((item, qty, price))
+
+        self.tree.insert("", "end", values=(f"{item} ({size})", qty, f"${price:.2f}"))
+        self.update_total()
+
+    def update_total(self):
+        total = sum(p for _, _, p in self.cart)
+        self.total_label.config(text=f"Total: ${total:.2f}")
+
+    def checkout(self):
+        if not self.cart:
+            messagebox.showwarning("Empty", "No items in cart")
+            return
+
+        order_id = str(uuid.uuid4())[:8]
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        receipt = f"Order ID: {order_id}\nTime: {now}\n\n"
+
+        for item, qty, price in self.cart:
+            receipt += f"{item} x{qty} - ${price:.2f}\n"
+
+        total = sum(p for _, _, p in self.cart)
+        receipt += f"\nTotal: ${total:.2f}\n"
+
+        with open(f"receipt_{order_id}.txt", "w") as f:
+            f.write(receipt)
+
+        messagebox.showinfo("Success", "Order complete!")
+        self.clear_cart()
+
+    def clear_cart(self):
+        self.cart.clear()
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        self.update_total()
+
 # -------- START THE OPERATION SYSTEM ---------
 def main_app():
-    root = tk.TK()
+    root = tk.Tk()
     app = CoffeeOS(root)
     root.mainloop()
 
