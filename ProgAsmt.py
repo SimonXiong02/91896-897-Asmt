@@ -50,6 +50,9 @@ class CoffeeOS:
         self.root.geometry("1000x600")
         self.root.configure(bg=BG)
 
+        self.total_label = tk.Label(text="Total: $0.00", bg=CARD, fg=FG, font=("Arial", 16))
+        self.total_label.pack(pady=5)
+        
         self.cart = []
         self.build_ui()
 
@@ -98,14 +101,17 @@ class CoffeeOS:
         ttk.Combobox(control_frame, textvariable=self.size_var, values=list(SIZES.keys()), width=10).grid(row=0, column=0, padx=5)
         ttk.Spinbox(control_frame, from_=1, to=10, textvariable=self.qty_var, width=5).grid(row=0, column=1, padx=5)
 
-        self.tree = ttk.Treeview(right, columns=("Items", "Qty", "Price"), show="headings", height=15)
+        self.tree = ttk.Treeview(
+            self.root, 
+            columns=("Item", "Qty", "Price"), 
+            show="headings", 
+            height=15
+            )
+        
         self.tree.heading("Item", text="Item")
         self.tree.heading("Qty", text="Qty")
         self.tree.heading("Price", text="Price")
         self.tree.pack(padx=10, pady=10)
-
-        self.total_label = tk.Label(right, text="Total: $0.00", bg=CARD, fg=FG, font=("Arial", 16))
-        self.total_label.pack(pady=5)
 
         tk.Button(right, text="Checkout", bg=ACCENT, command=self.checkout).pack(fill="x", padx=10, pady=5)
         tk.Button(right, text="Clear", command=self.clear_cart).pack(fill="x", padx=10)
@@ -129,22 +135,26 @@ class CoffeeOS:
             messagebox.showwarning("Empty", "No items in cart")
             return
 
-        order_id = str(uuid.uuid4())[:8]
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        confirm = messagebox.askyesno("Alert", "do you want to have a receipt")
 
-        receipt = f"Order ID: {order_id}\nTime: {now}\n\n"
+        if confirm:
 
-        for item, qty, price in self.cart:
-            receipt += f"{item} x{qty} - ${price:.2f}\n"
+            order_id = str(uuid.uuid4())[:8]
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        total = sum(p for _, _, p in self.cart)
-        receipt += f"\nTotal: ${total:.2f}\n"
+            receipt = f"Order ID: {order_id}\nTime: {now}\n\n"
 
-        with open(f"receipt_{order_id}.txt", "w") as f:
-            f.write(receipt)
+            for item, qty, price in self.cart:
+                receipt += f"{item} x{qty} - ${price:.2f}\n"
 
-        messagebox.showinfo("Success", "Order complete!")
-        self.clear_cart()
+            total = sum(p for _, _, p in self.cart)
+            receipt += f"\nTotal: ${total:.2f}\n"
+
+            with open(f"receipt_{order_id}.txt", "w") as f:
+                f.write(receipt)
+
+            messagebox.showinfo("Success", "Order complete!")
+            self.clear_cart()
 
     def clear_cart(self):
         self.cart.clear()
