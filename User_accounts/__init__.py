@@ -1,6 +1,8 @@
+# Initializing all modules
+
 from users import User
 from auth import hash_password
-from storage import *
+from storage import load_users, save_users
 
 def create_account(username, password):
     users = load_users()

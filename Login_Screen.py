@@ -1,7 +1,7 @@
 # This is a login screen for Coffee OS
 import tkinter as tk
 from tkinter import messagebox
-# from User_accounts import create_account
+from User_accounts import __init__
 
 # ------- USERS --------
 USERS = {

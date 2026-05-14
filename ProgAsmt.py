@@ -7,11 +7,13 @@ import uuid
 from Login_Screen import LoginWindow
 
 
+# ---- Theme ----
 BG = "#2b2b2b"
 FG = "#ffffff"
 ACCENT = "#c7a17a"
 CARD = "#3a3a3a"
 
+# ---- Cafe Menu ----
 MENU = {
     "Coffee": {
         "Espresso": 3.0,
@@ -33,12 +35,14 @@ MENU = {
     }
 }
 
+# ---- Options ----
 SIZES = {
     "Small": 1.0,
     "Medium": 1.3,
     "Large": 1.6
 }
 
+# ---- Tax Rate ----
 TAX_RATE = 0.15
 
 
