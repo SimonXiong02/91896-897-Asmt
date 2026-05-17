@@ -5,11 +5,8 @@ from User_accounts import create_account
 from create_account_window import CreateAccountWindow
 
 # ------- USERS --------
-USERS = {
-    "admin": "1234",
-    "staff": "noob1234"
-}
-
+from User_accounts.auth import verify_password
+from User_accounts.storage import load_users
 
 # -------- Theme --------
 BG = "#2b2b2b"
@@ -40,11 +37,17 @@ class LoginWindow:
         CreateAccountWindow(self.root)
 
     def login(self):
-        user = self.username.get()
-        pwd = self.password.get()
 
-        if user in USERS and USERS[user] == pwd:
-            self.root.destroy()
-            self.success_callback()
-        else:
-            messagebox.showerror("Error", "Invalid login!")
+        username = self.username.get()
+        password = self.password.get()
+
+        users = load_users()
+
+        for user in users:
+            if user["username"] == username:
+                if verify_password(password, user["password_hash"]):
+                    self.root.destroy()
+                    self.success_callback()
+                    return
+
+        messagebox.showerror("Error", "Invalid username or password!")
