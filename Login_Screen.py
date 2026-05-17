@@ -1,17 +1,17 @@
 # This is a login screen for Coffee OS
+
+# ----- General -----
 import tkinter as tk
 from tkinter import messagebox
 from User_accounts import create_account
 from create_account_window import CreateAccountWindow
 
-# ------- USERS --------
+# ----- USERS -----
 from User_accounts.auth import verify_password
 from User_accounts.storage import load_users
 
-# -------- Theme --------
-BG = "#2b2b2b"
-FG = "#ffffff"
-ACCENT = "#c7a17a"
+# ----- Theme -----
+from menu_config import *
 
 class LoginWindow:
     def __init__(self, root, success_callback):

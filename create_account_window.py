@@ -1,10 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from User_accounts import create_account
+from menu_config import *
 
-BG = "#2b2b2b"
-FG = "#ffffff"
-ACCENT = "#c7a17a"
 
 class CreateAccountWindow:
     def __init__(self, parent):
