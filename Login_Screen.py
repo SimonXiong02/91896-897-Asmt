@@ -1,7 +1,8 @@
 # This is a login screen for Coffee OS
 import tkinter as tk
 from tkinter import messagebox
-from User_accounts import __init__
+from User_accounts import create_account
+from create_account_window import CreateAccountWindow
 
 # ------- USERS --------
 USERS = {
@@ -29,10 +30,14 @@ class LoginWindow:
         self.username = tk.StringVar()
         self.password = tk.StringVar()
 
-        tk.Entry(root, textvariable=self.username).pack(pady=5)
-        tk.Entry(root, textvariable=self.password, show="*").pack(pady=5)
+        tk.Entry(root, textvariable=self.username, bg=BG, fg=FG).pack(pady=5)
+        tk.Entry(root, textvariable=self.password, show="*", bg=BG, fg=FG).pack(pady=5)
 
         tk.Button(root, text="Login", bg=ACCENT, command=self.login).pack(pady=20)
+        tk.Button(root, text="Create Account", bg=ACCENT, command=self.open_create_account).pack(pady=5)
+
+    def open_create_account(self):
+        CreateAccountWindow(self.root)
 
     def login(self):
         user = self.username.get()
