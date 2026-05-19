@@ -16,10 +16,10 @@ class CreateAccountWindow:
         self.username_var = tk.StringVar()
         self.password_var = tk.StringVar()
 
-        tk.Label(self.window, text="Username", bg=BG, fg=FG).pack()
+        tk.Label(self.window, text="Username", bg=BG, fg=ACCENT).pack()
         tk.Entry(self.window, textvariable=self.username_var, bg=BG, fg=FG).pack(pady=5)
 
-        tk.Label(self.window, text="Password", bg=BG, fg=FG).pack()
+        tk.Label(self.window, text="Password", bg=BG, fg=ACCENT).pack()
         tk.Entry(self.window, textvariable=self.password_var, show="*", bg=BG ,fg=FG).pack(pady=5)
 
         tk.Button(self.window, text="Create", bg=ACCENT, command=self.create).pack(pady=20)

@@ -27,9 +27,20 @@ class LoginWindow:
         self.username = tk.StringVar()
         self.password = tk.StringVar()
 
-        tk.Entry(root, textvariable=self.username, bg=BG, fg=FG).pack(pady=5)
-        tk.Entry(root, textvariable=self.password, show="*", bg=BG, fg=FG).pack(pady=5)
+        self.username_label = tk.StringVar()
+        self.password_label = tk.StringVar()
 
+        self.username_label.set("Username")
+        self.password_label.set("Password")
+
+        # Username input
+        tk.Label(root, textvariable=self.username_label, bg=BG, fg=ACCENT).pack(pady=5)
+        tk.Entry(root, textvariable=self.username, bg=BG, fg=FG).pack(pady=5)
+
+        # Password input
+        tk.Label(root, textvariable=self.password_label, bg=BG, fg=ACCENT).pack(pady=5)
+        tk.Entry(root, textvariable=self.password, show="*", bg=BG, fg=FG).pack(pady=5)
+        
         tk.Button(root, text="Login", bg=ACCENT, command=self.login).pack(pady=20)
         tk.Button(root, text="Create Account", bg=ACCENT, command=self.open_create_account).pack(pady=5)
 
