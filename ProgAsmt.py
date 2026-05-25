@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
 import uuid
-from cart_checkout import OrderManager
+from cart_checkout import OrderManager, CheckoutWindow
 from Login_Screen import LoginWindow
 from menu_config import *
 
@@ -133,11 +133,13 @@ class CoffeeOS:
         self.total_label.config(text=f"Total: ${total:.2f}")
 
     def checkout(self):
+        total = sum(price for _, _, price in self.cart)
+        CheckoutWindow(self.root, total, self.complete_order)
 
-        OrderManager.checkout(self.cart, self.clear_cart)
+    def complete_order(self):
+        OrderManager.clear_cart(self.cart, self.tree, self.update_total)
 
     def clear_cart(self):
-
         OrderManager.clear_cart(self.cart, self.tree, self.update_total)
 
 # -------- START THE OPERATION SYSTEM ---------
