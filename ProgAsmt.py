@@ -84,13 +84,48 @@ class CoffeeOS:
         tk.Button(right, text="Clear", command=self.clear_cart).pack(fill="x", padx=10)
 
     def select_item(self, item, base_price):
+
         size = self.size_var.get()
         qty = self.qty_var.get()
 
-        price = base_price * SIZES[size] * qty
-        self.cart.append((item, qty, price))
+        added_price = (
+            base_price *
+            SIZES[size] *
+            qty
+        )
 
-        self.tree.insert("", "end", values=(f"{item} ({size})", qty, f"${price:.2f}"))
+        item_name = f"{item} ({size})"
+
+        # Check if iten already exists
+        for index, (cart_item, cart_qty, cart_price) in enumerate(self.cart):
+
+            if cart_item == item_name:
+
+                new_qty = cart_qty + qty
+                new_price = cart_price + added_price
+
+                self.cart[index] = (
+                    cart_item,
+                    new_qty,
+                    new_price
+                )
+
+                for row in self.tree.get_children():
+
+                    values = self.tree.item(row)["values"]
+
+                    if values[0] == item_name:
+
+                        self.tree.item(row, values=(item_name, new_qty, f"${new_price:.2f}"))
+                        break
+
+                self.update_total()
+                return
+
+        # Add new item if not found
+        self.cart.append((item_name, qty, added_price))
+        self.tree.insert("", "end", values=(item_name, qty, f"${added_price:.2f}"))
+
         self.update_total()
 
     def update_total(self):
