@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
 import uuid
-from cart_checkout import OrderManager, CheckoutWindow
+from cart_checkout import PrintReceipt, CheckoutWindow
 from Login_Screen import LoginWindow
 from menu_config import *
 
@@ -137,10 +137,10 @@ class CoffeeOS:
         CheckoutWindow(self.root, total, self.complete_order)
 
     def complete_order(self):
-        OrderManager.clear_cart(self.cart, self.tree, self.update_total)
+        PrintReceipt.checkout(self.cart, self.clear_cart)
 
     def clear_cart(self):
-        OrderManager.clear_cart(self.cart, self.tree, self.update_total)
+        PrintReceipt.clear_cart(self.cart, self.tree, self.update_total)
 
 # -------- START THE OPERATION SYSTEM ---------
 def main_app():

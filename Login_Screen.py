@@ -19,7 +19,7 @@ class LoginWindow:
         self.success_callback = success_callback
 
         self.root.title("Login - Cafe OS")
-        self.root.geometry("500x450")
+        self.root.attributes("-fullscreen", True)
         self.root.configure(bg=BG)
 
         tk.Label(root, text="Cafe Login", bg=BG, fg=FG, font=("Arial", 16)).pack(pady=20)

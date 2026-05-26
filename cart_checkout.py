@@ -15,7 +15,7 @@ class CheckoutWindow:
         self.window = tk.Toplevel(parent)
 
         self.window.title("Checkout")
-        self.window.geometry("350x300")
+        self.window.attributes("-fullscreen", True)
         self.window.configure(bg=BG)
 
         tk.Label(self.window, text="Checkout", bg=BG, fg=FG, font=("Arial", 18)).pack(pady=20)
@@ -42,16 +42,16 @@ class CheckoutWindow:
             messagebox.showwarning("Not Enough", "Customer has not paid enough")
             return
 
-        change = cash- self.total
+        change = cash - self.total
 
         self.change_label.config(text=f"Change: ${change:.2f}")
 
-        messagebox.showerror("Success", "Payment Complete")
+        messagebox.showinfo("Success", "Payment Complete")
 
         self.complete_callback()
         self.window.destroy()
 
-class OrderManager:
+class PrintReceipt:
 
     @staticmethod
     def checkout(cart, clear_callback):
@@ -84,8 +84,6 @@ class OrderManager:
 
         with open(f"receipt_{order_id}.txt", "w") as file:
             file.write(receipt)
-
-        messagebox.showinfo("Success", "Order complete!")
 
         clear_callback()
 
