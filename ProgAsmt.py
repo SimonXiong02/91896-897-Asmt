@@ -14,10 +14,10 @@ class CoffeeOS:
     def __init__(self, root):
         self.root = root
         self.root.title("Cafe OS System")
-        self.root.geometry("1000x600")
+        self.root.attributes("-fullscreen", True)
         self.root.configure(bg=BG)
 
-        self.total_label = tk.Label(text="Total: $0.00", bg=CARD, fg=FG, font=("Arial", 16))
+        self.total_label = tk.Label(text="Total: $0.00", bg=CARD, fg=FG, font=("Arial", 30))
         self.total_label.pack(pady=5)
 
         self.cart = []
@@ -50,14 +50,13 @@ class CoffeeOS:
                     height=3,
                     command=lambda i=item, p=price: self.select_item(i, p)
                 )
+                btn.bind("<Button-3>", lambda event, i=item, p=price: self.show_price_preview(event, i , p))
                 btn.grid(row=row, column=col, padx=10, pady=10)
 
                 col += 1
                 if col > 2:
                     col = 0
                     row += 1
-
-        tk.Label(right, text="Order", bg=CARD, fg=FG, font=("Arial", 16)).pack(pady=10)
 
         control_frame = tk.Frame(right, bg=CARD)
         control_frame.pack(pady=5)
@@ -127,6 +126,22 @@ class CoffeeOS:
         self.tree.insert("", "end", values=(item_name, qty, f"${added_price:.2f}"))
 
         self.update_total()
+
+    def show_price_preview(self, event, item, base_price):
+        menu = tk.Menu(self.root, tearoff=0)
+
+        small = (base_price * SIZES["Small"])
+        medium = (base_price * SIZES["Medium"])
+        large = (base_price * SIZES["Large"])
+
+        menu.add_command(label=f"{item}")
+        menu.add_separator()
+
+        menu.add_command(label=f"Small  - ${small:.2f}")
+        menu.add_command(label=f"Medium  - ${medium:.2f}")
+        menu.add_command(label=f"Large  - ${large:.2f}")
+
+        menu.tk_popup(event.x_root, event.y_root)
 
     def update_total(self):
         total = sum(p for _, _, p in self.cart)

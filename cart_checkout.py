@@ -38,7 +38,7 @@ class CheckoutWindow:
             messagebox.showerror("Error", "Enter valid amount")
             return
 
-        if cash < self.total:
+        if round(cash, 2) < round(self.total, 2):
             messagebox.showwarning("Not Enough", "Customer has not paid enough")
             return
 
