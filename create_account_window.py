@@ -14,22 +14,22 @@ class CreateAccountWindow:
         center_frame = tk.Frame(self.window, bg=BG, padx=40, pady=40)
         center_frame.place(relx=0.5, rely=0.5, anchor="center")
 
-        tk.Label(self.window, text="Create Account", bg=BG, fg=FG, font=("Arial", 30)).pack(pady=20)
+        tk.Label(center_frame, text="Create Account", bg=BG, fg=FG, font=("Arial", 30)).pack(pady=20)
 
         self.username_var = tk.StringVar()
         self.password_var = tk.StringVar()
         self.confirm_password_var = tk.StringVar()
 
         tk.Label(center_frame, text="Username", bg=BG, fg=ACCENT, font=("Arial", 16)).pack()
-        tk.Entry(center_frame, textvariable=self.username_var, bg=BG, fg=FG).pack(pady=5)
+        tk.Entry(center_frame, textvariable=self.username_var, bg=BG, fg=FG, font=("Arial", 20)).pack(pady=5)
 
         tk.Label(center_frame, text="Password", bg=BG, fg=ACCENT, font=("Arial", 16)).pack()
-        tk.Entry(center_frame, textvariable=self.password_var, show="*", bg=BG ,fg=FG).pack(pady=5)
+        tk.Entry(center_frame, textvariable=self.password_var, show="*", bg=BG ,fg=FG, font=("Arial", 20)).pack(pady=5)
 
-        tk.Label(center_frame, text="Confirm Password", bg=CARD, fg=FG).pack(pady=5)
-        tk.Entry(center_frame, textvariable=self.confirm_password_var, show="*", bg="white", fg="black", font=("Arial", 16)).pack(pady=5)
+        tk.Label(center_frame, text="Confirm Password", bg=BG, fg=ACCENT, font=("Arial", 16)).pack(pady=5)
+        tk.Entry(center_frame, textvariable=self.confirm_password_var, show="*", bg=BG, fg=FG, font=("Arial", 20)).pack(pady=5)
 
-        tk.Button(center_frame, text="Create", bg=ACCENT, command=self.create).pack(pady=20)
+        tk.Button(center_frame, text="Create", bg=ACCENT, command=self.create, font=("Arial", 16)).pack(pady=20)
 
     def create(self):
 

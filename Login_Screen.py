@@ -22,10 +22,10 @@ class LoginWindow:
         self.root.attributes("-fullscreen", True)
         self.root.configure(bg=BG)
 
-        center_frame = tk.Frame(root, bg=BG)
+        center_frame = tk.Frame(root, bg=BG, padx=40, pady=40)
         center_frame.place(relx=0.5, rely=0.5, anchor="center")
 
-        tk.Label(root, text="Cafe Login", bg=BG, fg=FG, font=("Arial", 30)).pack(pady=20)
+        tk.Label(center_frame, text="Cafe Login", bg=BG, fg=FG, font=("Arial", 30)).pack(pady=20)
 
         self.username = tk.StringVar()
         self.password = tk.StringVar()
@@ -38,14 +38,14 @@ class LoginWindow:
 
         # Username input
         tk.Label(center_frame, textvariable=self.username_label, bg=BG, fg=ACCENT, font=("Arial", 16)).pack(pady=5)
-        tk.Entry(center_frame, textvariable=self.username, bg=BG, fg=FG).pack(pady=5)
+        tk.Entry(center_frame, textvariable=self.username, bg=BG, fg=FG, font=("Arial", 20)).pack(pady=5)
 
         # Password input
         tk.Label(center_frame, textvariable=self.password_label, bg=BG, fg=ACCENT, font=("Arial", 16)).pack(pady=5)
-        tk.Entry(center_frame, textvariable=self.password, show="*", bg=BG, fg=FG).pack(pady=5)
+        tk.Entry(center_frame, textvariable=self.password, show="*", bg=BG, fg=FG, font=("Arial", 20)).pack(pady=5)
 
-        tk.Button(center_frame, text="Login", bg=ACCENT, command=self.login).pack(pady=20)
-        tk.Button(center_frame, text="Create Account", bg=ACCENT, command=self.open_create_account).pack(pady=5)
+        tk.Button(center_frame, text="Login", bg=ACCENT, command=self.login, font=("Arial", 16)).pack(pady=20)
+        tk.Button(center_frame, text="Create Account", bg=ACCENT, command=self.open_create_account, font=("Arial", 16)).pack(pady=5)
 
     def open_create_account(self):
         self.root.withdraw()

@@ -18,18 +18,21 @@ class CheckoutWindow:
         self.window.attributes("-fullscreen", True)
         self.window.configure(bg=BG)
 
-        tk.Label(self.window, text="Checkout", bg=BG, fg=FG, font=("Arial", 18)).pack(pady=20)
-        tk.Label(self.window, text=f"Total: ${total:.2f}", bg=BG, fg=FG, font=("Arial", 14)).pack(pady=10)
+        center_frame = tk.Frame(self.window, bg=BG, padx=50, pady=50)
+        center_frame.place(relx=0.5, rely=0.5, anchor="center")
+
+        tk.Label(center_frame, text="Checkout", bg=BG, fg=FG, font=("Arial", 20)).pack(pady=20)
+        tk.Label(center_frame, text=f"Total: ${total:.2f}", bg=BG, fg=FG, font=("Arial", 18)).pack(pady=10)
 
         self.cash_var = tk.StringVar()
 
-        tk.Label(self.window, text="Cash Received", bg=BG, fg=FG).pack()
-        tk.Entry(self.window, textvariable=self.cash_var, bg="white", fg="black").pack(pady=10, ipadx=30)
+        tk.Label(center_frame, text="Cash Received", bg=BG, fg=FG, font=("Arial", 18)).pack()
+        tk.Entry(center_frame, textvariable=self.cash_var, bg="white", fg="black", font=("Arial", 20)).pack(pady=10, ipadx=30)
 
-        self.change_label = tk.Label(self.window, text="Change: $0.00", bg=BG, fg=FG, font=("Arial", 12))
+        self.change_label = tk.Label(center_frame, text="Change: $0.00", bg=BG, fg=FG, font=("Arial", 15))
         self.change_label.pack(pady=10)
 
-        tk.Button(self.window, text="Process Payment", bg=ACCENT, command=self.process_payment).pack(pady=20)
+        tk.Button(center_frame, text="Process Payment", bg=ACCENT, command=self.process_payment, font=("Arial", 18)).pack(pady=20)
 
     def process_payment(self):
         try:
