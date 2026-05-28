@@ -14,7 +14,7 @@ class CreateAccountWindow:
         center_frame = tk.Frame(self.window, bg=BG, padx=40, pady=40)
         center_frame.place(relx=0.5, rely=0.5, anchor="center")
 
-        tk.Label(center_frame, text="Create Account", bg=BG, fg=FG, font=("Arial", 30)).pack(pady=20)
+        tk.Label(self.window, text="Create Account", bg=BG, fg=FG, font=("Arial", 30)).pack(pady=20)
 
         self.username_var = tk.StringVar()
         self.password_var = tk.StringVar()
