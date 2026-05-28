@@ -25,6 +25,7 @@ class CheckoutWindow:
         tk.Label(center_frame, text=f"Total: ${total:.2f}", bg=BG, fg=FG, font=("Arial", 18)).pack(pady=10)
 
         self.cash_var = tk.StringVar()
+        self.cash_var.trace_add("write", self.update_change)
 
         tk.Label(center_frame, text="Cash Received", bg=BG, fg=FG, font=("Arial", 18)).pack()
         tk.Entry(center_frame, textvariable=self.cash_var, bg="white", fg="black", font=("Arial", 20)).pack(pady=10, ipadx=30)
@@ -33,6 +34,18 @@ class CheckoutWindow:
         self.change_label.pack(pady=10)
 
         tk.Button(center_frame, text="Process Payment", bg=ACCENT, command=self.process_payment, font=("Arial", 18)).pack(pady=20)
+
+
+    def update_change(self, *args):
+        try:
+            cash = float(self.cash_var.get())
+
+            change = cash - self.total
+
+            self.change_label.config(text=f"Change: ${change:.2f}")
+
+        except ValueError:
+            self.change_label.config(text="Change: $0.00")
 
     def process_payment(self):
         try:
