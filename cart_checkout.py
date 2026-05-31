@@ -4,6 +4,9 @@ from tkinter import messagebox
 from datetime import datetime
 import uuid
 
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+
 from menu_config import *
 
 class CheckoutWindow:
@@ -79,27 +82,31 @@ class PrintReceipt:
 
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        receipt = (
-            f"Order ID: {order_id}\n"
-            f"Time: {now}\n\n"
-        )
-
         total = 0
 
+        pdf_file = f"receipt_{order_id}.pdf"
+
+        doc = SimpleDocTemplate(pdf_file)
+        styles = getSampleStyleSheet()
+
+        content = [
+            Paragraph("CoffeeOS Receipt", styles["Title"]),
+            Spacer(1, 12),
+            Paragraph(f"Order ID: {order_id}", styles["Normal"]),
+            Paragraph(f"Time: {now}", styles["Normal"]),
+            Spacer(1, 12)
+        ]
 
         for item, qty, price in cart:
 
-            receipt += (
-                f"{item} x{qty} - ${price:.2f}\n"
-            )
+           total += price
 
-            total += price
+           content.append(Paragraph(f"{item} x{qty} - ${price:.2f}", styles["Normal"]))
 
-        receipt += f"\nTotal: ${total:.2f}\n"
+        content.append(Spacer(1, 12))
+        content.append(Paragraph(f"Total: ${total:.2f}", styles["Heading2"]))
 
-
-        with open(f"receipt_{order_id}.txt", "w") as file:
-            file.write(receipt)
+        doc.build(content)
 
         clear_callback()
 
