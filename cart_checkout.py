@@ -21,7 +21,7 @@ class CheckoutWindow:
         center_frame = tk.Frame(self.window, bg=BG, padx=50, pady=50)
         center_frame.place(relx=0.5, rely=0.5, anchor="center")
 
-        tk.Label(self.window, text="Checkout", bg=BG, fg=FG, font=("Arial", 20)).pack(pady=20)
+        tk.Label(self.window, text="Checkout", bg=BG, fg=FG, font=("Arial", 30)).pack(pady=20)
         tk.Label(center_frame, text=f"Total: ${total:.2f}", bg=BG, fg=FG, font=("Arial", 18)).pack(pady=10)
 
         self.cash_var = tk.StringVar()
