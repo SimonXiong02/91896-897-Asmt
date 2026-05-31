@@ -65,7 +65,19 @@ class CoffeeOS:
         self.qty_var = tk.IntVar(value=1)
 
         ttk.Combobox(control_frame, textvariable=self.size_var, values=list(SIZES.keys()), state="readonly", width=10).grid(row=0, column=0, padx=5)
-        ttk.Spinbox(control_frame, from_=1, to=10, textvariable=self.qty_var, state="readonly", width=5).grid(row=0, column=1, padx=5)
+
+        def validate_quantity(value):
+            if value == "":
+                return True
+
+            if value.isdigit():
+                return True
+
+            messagebox.showwarning("Invalid Input", "Only numbers are accepted!")
+            return False
+
+        vcmd = (self.root.register(validate_quantity), "%P")
+        ttk.Spinbox(control_frame, from_=1, to=100, textvariable=self.qty_var, validate="key", validatecommand=vcmd ,width=5).grid(row=0, column=1, padx=5)
 
         self.tree = ttk.Treeview(
             self.root,
