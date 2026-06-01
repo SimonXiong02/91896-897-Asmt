@@ -83,7 +83,7 @@ class PrintReceipt:
 
         order_id = str(uuid.uuid4())[:8]
 
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
         subtotal = 0
 
