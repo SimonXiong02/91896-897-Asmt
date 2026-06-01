@@ -70,6 +70,7 @@ class CheckoutWindow:
         self.complete_callback()
         self.window.destroy()
 
+# ---- Class containing the essential code for generating receipts ----
 class PrintReceipt:
 
     @staticmethod
@@ -80,11 +81,14 @@ class PrintReceipt:
 
         order_id = str(uuid.uuid4())[:8]
 
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 
-        total = 0
+        subtotal = 0
 
-        pdf_file = f"receipt_{order_id}.pdf"
+        pdf_file = (
+            f"{timestamp}_"
+            f"{order_id}.pdf"
+        )
 
         doc = SimpleDocTemplate(pdf_file)
         styles = getSampleStyleSheet()
@@ -92,24 +96,34 @@ class PrintReceipt:
         content = [
             Paragraph("CoffeeOS Receipt", styles["Title"]),
             Spacer(1, 12),
-            Paragraph(f"Order ID: {order_id}", styles["Normal"]),
-            Paragraph(f"Time: {now}", styles["Normal"]),
+            Paragraph(f"Receipt ID: {order_id}", styles["Normal"]),
+            Paragraph(f"Created: {timestamp}", styles["Normal"]),
             Spacer(1, 12)
         ]
 
         for item, qty, price in cart:
 
-           total += price
+           subtotal += price
 
-           content.append(Paragraph(f"{item} x{qty} - ${price:.2f}", styles["Normal"]))
+        tax = subtotal * TAX_RATE
+
+        total = subtotal + tax
+
+        # ---- ordering the receipt structure ----
+        content.append(Paragraph(f"{item} x{qty} - ${price:.2f}", styles["Normal"]))
 
         content.append(Spacer(1, 12))
+        content.append(Paragraph(f"Subtotal: ${subtotal:.2f}", styles["Normal"]))
+
+        content.append(Paragraph(f"Tax ({TAX_RATE*100:.0f}%): ${tax:.2f}", styles["Normal"]))
+
         content.append(Paragraph(f"Total: ${total:.2f}", styles["Heading2"]))
 
         doc.build(content)
 
         clear_callback()
 
+    # ---- Clears Cart ----
     @staticmethod
     def clear_cart(cart, tree, update_total):
         cart.clear()
