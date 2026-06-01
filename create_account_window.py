@@ -5,6 +5,7 @@ from menu_config import *
 
 
 class CreateAccountWindow:
+    # ---- Initializes the Create Account Window UI elements ----
     def __init__(self, parent):
         self.window = tk.Toplevel(parent)
         self.window.title("Create Account")
@@ -31,6 +32,7 @@ class CreateAccountWindow:
 
         tk.Button(center_frame, text="Create", bg=ACCENT, command=self.create, font=("Arial", 16)).pack(pady=20)
 
+    # ---- Validates the accounts ----
     def create(self):
 
         username = self.username_var.get()

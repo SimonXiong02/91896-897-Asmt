@@ -14,6 +14,7 @@ from User_accounts.storage import load_users
 from menu_config import *
 
 class LoginWindow:
+    # ---- Initializes the Login Window UI elements ----
     def __init__(self, root, success_callback):
         self.root = root
         self.success_callback = success_callback
@@ -47,6 +48,7 @@ class LoginWindow:
         tk.Button(center_frame, text="Login", bg=ACCENT, command=self.login, font=("Arial", 16)).pack(pady=20)
         tk.Button(center_frame, text="Create Account", bg=ACCENT, command=self.open_create_account, font=("Arial", 16)).pack(pady=5)
 
+    # ---- Opens the Create Account Window ----
     def open_create_account(self):
         self.root.withdraw()
 
@@ -55,6 +57,7 @@ class LoginWindow:
         self.root.wait_window(create_window.window)
         self.root.deiconify()
 
+    # ---- Validates the account ----
     def login(self):
 
         username = self.username.get()
@@ -62,6 +65,7 @@ class LoginWindow:
 
         users = load_users()
 
+        # ---- Password_hash Encryption ----
         for user in users:
             if user["username"] == username:
                 if verify_password(password, user["password_hash"]):

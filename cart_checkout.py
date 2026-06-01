@@ -10,6 +10,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from menu_config import *
 
 class CheckoutWindow:
+    # ---- Initializes the checkout window UI elements ----
     def __init__(self, parent, total, complete_callback):
 
         self.total = total
@@ -38,7 +39,7 @@ class CheckoutWindow:
 
         tk.Button(center_frame, text="Process Payment", bg=ACCENT, command=self.process_payment, font=("Arial", 18)).pack(pady=20)
 
-
+    # ---- updates the change ----
     def update_change(self, *args):
         try:
             cash = float(self.cash_var.get())
@@ -50,6 +51,7 @@ class CheckoutWindow:
         except ValueError:
             self.change_label.config(text="Change: $0.00")
 
+    # ---- proceeds the payment ----
     def process_payment(self):
         try:
             cash = float(self.cash_var.get())
@@ -85,6 +87,7 @@ class PrintReceipt:
 
         subtotal = 0
 
+        # ---- Receipt label configuration ----
         pdf_file = (
             f"{timestamp}_"
             f"{order_id}.pdf"
@@ -93,6 +96,7 @@ class PrintReceipt:
         doc = SimpleDocTemplate(pdf_file)
         styles = getSampleStyleSheet()
 
+        # ---- Receipt details ----
         content = [
             Paragraph("CoffeeOS Receipt", styles["Title"]),
             Spacer(1, 12),
@@ -103,15 +107,15 @@ class PrintReceipt:
 
         for item, qty, price in cart:
 
-           subtotal += price
+            content.append(Paragraph(f"{item} x{qty} - ${price:.2f}", styles["Normal"]))
+
+            subtotal += price
 
         tax = subtotal * TAX_RATE
 
         total = subtotal + tax
 
         # ---- ordering the receipt structure ----
-        content.append(Paragraph(f"{item} x{qty} - ${price:.2f}", styles["Normal"]))
-
         content.append(Spacer(1, 12))
         content.append(Paragraph(f"Subtotal: ${subtotal:.2f}", styles["Normal"]))
 

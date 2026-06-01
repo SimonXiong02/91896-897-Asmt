@@ -11,6 +11,7 @@ from menu_config import *
 
 # ------- COFFEE SYSTEM -------
 class CoffeeOS:
+    # ---- Initializes the main program ----
     def __init__(self, root):
         self.root = root
         self.root.title("Cafe OS System")
@@ -23,6 +24,7 @@ class CoffeeOS:
         self.cart = []
         self.build_ui()
 
+    # ---- Initializes UI elements of the main program ----
     def build_ui(self):
         left = tk.Frame(self.root, bg=BG)
         left.pack(side="left", fill="both", expand=True)
@@ -84,6 +86,7 @@ class CoffeeOS:
 
         tk.Button(right, text="Logout", bg=ACCENT, fg="white", command=self.logout).pack(fill="x", padx=10, pady=5)
 
+    # ---- Give users the options to select their preferred orders ----
     def select_item(self, item, base_price):
 
         size = self.size_var.get()
@@ -129,6 +132,7 @@ class CoffeeOS:
 
         self.update_total()
 
+    # ---- Gives users the freedom the preview the price of each item by their size variants ----
     def show_price_preview(self, event, item, base_price):
         menu = tk.Menu(self.root, tearoff=0)
 
@@ -145,26 +149,32 @@ class CoffeeOS:
 
         menu.tk_popup(event.x_root, event.y_root)
 
+    # ---- Updates the total amount of currency ----
     def update_total(self):
         total = sum(p for _, _, p in self.cart)
         self.total_label.config(text=f"Total: ${total:.2f}")
 
+    # ---- A checkout port update ----
     def checkout(self):
         total = sum(price for _, _, price in self.cart)
         CheckoutWindow(self.root, total, self.complete_order)
 
+    # ---- Completes the full order ----
     def complete_order(self):
         PrintReceipt.checkout(self.cart, self.clear_cart)
 
+    # ---- Add option for users to clear cart at their will ----
     def clear_cart(self):
         PrintReceipt.clear_cart(self.cart, self.tree, self.update_total)
 
+# -------- START THE OPERATION SYSTEM --------
     def start_os():
         root = tk.Tk()
 
         CoffeeOS(root)
         root.mainloop()
 
+# -------- ALLOWS USERS TO LOGOUT --------
     def logout(self):
         self.root.destroy()
 
@@ -173,7 +183,7 @@ class CoffeeOS:
         LoginWindow(login_root, self.start_os)
         login_root.mainloop()
 
-# -------- START THE OPERATION SYSTEM ---------
+# -------- START THE CORE OF THE PROGRAM --------
 def main_app():
     root = tk.Tk()
     app = CoffeeOS(root)

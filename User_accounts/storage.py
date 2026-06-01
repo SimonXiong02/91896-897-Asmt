@@ -1,3 +1,4 @@
+# ---- CREATES A USERNAME DATABASE ----
 import json
 import os
 

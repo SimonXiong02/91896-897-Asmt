@@ -1,3 +1,4 @@
+# ---- ADDS PASSWORD_HASH ENCRYPTION ----
 import hashlib
 
 def hash_password(password):
