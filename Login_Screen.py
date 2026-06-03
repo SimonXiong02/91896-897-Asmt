@@ -73,4 +73,5 @@ class LoginWindow:
                     self.success_callback()
                     return
 
+        # ---- Error Message ----
         messagebox.showerror("Error", "Invalid username or password!")

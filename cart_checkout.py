@@ -1,4 +1,5 @@
-# This module is the checkout functionality of coffeeOS
+
+# * ---- This module is the checkout functionality of coffeeOS ---- *
 import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
@@ -10,7 +11,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from menu_config import *
 
 class CheckoutWindow:
-    # ---- Initializes the checkout window UI elements ----
+    # * ---- Initializes the checkout window UI elements ---- *
     def __init__(self, parent, total, complete_callback):
 
         self.total = total
@@ -39,7 +40,7 @@ class CheckoutWindow:
 
         tk.Button(center_frame, text="Process Payment", bg=ACCENT, command=self.process_payment, font=("Arial", 18)).pack(pady=20)
 
-    # ---- updates the change ----
+    # * ---- updates the change ---- *
     def update_change(self, *args):
         try:
             cash = float(self.cash_var.get())
@@ -51,7 +52,7 @@ class CheckoutWindow:
         except ValueError:
             self.change_label.config(text="Change: $0.00")
 
-    # ---- proceeds the payment ----
+    # * ---- proceeds the payment ---- *
     def process_payment(self):
         try:
             cash = float(self.cash_var.get())
@@ -72,7 +73,7 @@ class CheckoutWindow:
         self.complete_callback()
         self.window.destroy()
 
-# ---- Class containing the essential code for generating receipts ----
+# * ---- Class containing the essential code for generating receipts ---- *
 class PrintReceipt:
 
     @staticmethod
@@ -87,7 +88,7 @@ class PrintReceipt:
 
         subtotal = 0
 
-        # ---- Receipt label configuration ----
+        # * ---- Receipt label configuration ---- *
         pdf_file = (
             f"{timestamp}_"
             f"{order_id}.pdf"
@@ -96,7 +97,7 @@ class PrintReceipt:
         doc = SimpleDocTemplate(pdf_file)
         styles = getSampleStyleSheet()
 
-        # ---- Receipt details ----
+        # * ---- Receipt details ---- *
         content = [
             Paragraph("CoffeeOS Receipt", styles["Title"]),
             Spacer(1, 12),
@@ -115,7 +116,7 @@ class PrintReceipt:
 
         total = subtotal + tax
 
-        # ---- ordering the receipt structure ----
+        # * ---- ordering the receipt structure ---- *
         content.append(Spacer(1, 12))
         content.append(Paragraph(f"Subtotal: ${subtotal:.2f}", styles["Normal"]))
 
@@ -127,7 +128,7 @@ class PrintReceipt:
 
         clear_callback()
 
-    # ---- Clears Cart ----
+    # * ---- Clears Cart ---- *
     @staticmethod
     def clear_cart(cart, tree, update_total):
         cart.clear()

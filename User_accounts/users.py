@@ -1,4 +1,5 @@
-# ---- DEFINES ALL USERS ----
+
+# ? ---- DEFINES ALL USERS ---- ?
 class User:
     def __init__(self, username, password_hash):
         self.username = username

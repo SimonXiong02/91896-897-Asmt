@@ -1,5 +1,5 @@
-# This is a coffee menu framework
 
+# * ---- This is a coffee menu framework ---- *
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
@@ -9,9 +9,9 @@ from Login_Screen import LoginWindow
 from menu_config import *
 
 
-# ------- COFFEE SYSTEM -------
+# * ------- COFFEE SYSTEM ------- *
 class CoffeeOS:
-    # ---- Initializes the main program ----
+    # * ---- Initializes the main program ---- *
     def __init__(self, root):
         self.root = root
         self.root.title("Cafe OS System")
@@ -24,7 +24,7 @@ class CoffeeOS:
         self.cart = []
         self.build_ui()
 
-    # ---- Initializes UI elements of the main program ----
+    # * ---- Initializes UI elements of the main program ---- *
     def build_ui(self):
         left = tk.Frame(self.root, bg=BG)
         left.pack(side="left", fill="both", expand=True)
@@ -86,7 +86,7 @@ class CoffeeOS:
 
         tk.Button(right, text="Logout", bg=ACCENT, fg="white", command=self.logout).pack(fill="x", padx=10, pady=5)
 
-    # ---- Give users the options to select their preferred orders ----
+    # * ---- Give users the options to select their preferred orders ---- *
     def select_item(self, item, base_price):
 
         size = self.size_var.get()
@@ -100,7 +100,7 @@ class CoffeeOS:
 
         item_name = f"{item} ({size})"
 
-        # Check if iten already exists
+        # * ---- Check if item already exists ---- *
         for index, (cart_item, cart_qty, cart_price) in enumerate(self.cart):
 
             if cart_item == item_name:
@@ -114,6 +114,7 @@ class CoffeeOS:
                     new_price
                 )
 
+                # * ---- Check item prices ---- *
                 for row in self.tree.get_children():
 
                     values = self.tree.item(row)["values"]
@@ -126,13 +127,13 @@ class CoffeeOS:
                 self.update_total()
                 return
 
-        # Add new item if not found
+        # * ---- Add new item if not found ---- *
         self.cart.append((item_name, qty, added_price))
         self.tree.insert("", "end", values=(item_name, qty, f"${added_price:.2f}"))
 
         self.update_total()
 
-    # ---- Gives users the freedom the preview the price of each item by their size variants ----
+    # * ---- Gives users the freedom the preview the price of each item by their size variants ---- *
     def show_price_preview(self, event, item, base_price):
         menu = tk.Menu(self.root, tearoff=0)
 
@@ -149,32 +150,32 @@ class CoffeeOS:
 
         menu.tk_popup(event.x_root, event.y_root)
 
-    # ---- Updates the total amount of currency ----
+    # * ---- Updates the total amount of currency ---- *
     def update_total(self):
         total = sum(p for _, _, p in self.cart)
         self.total_label.config(text=f"Total: ${total:.2f}")
 
-    # ---- A checkout port update ----
+    # * ---- A checkout port update ---- *
     def checkout(self):
         total = sum(price for _, _, price in self.cart)
         CheckoutWindow(self.root, total, self.complete_order)
 
-    # ---- Completes the full order ----
+    # * ---- Completes the full order ---- *
     def complete_order(self):
         PrintReceipt.checkout(self.cart, self.clear_cart)
 
-    # ---- Add option for users to clear cart at their will ----
+    # * ---- Add option for users to clear cart at their will ---- *
     def clear_cart(self):
         PrintReceipt.clear_cart(self.cart, self.tree, self.update_total)
 
-# -------- START THE OPERATION SYSTEM --------
+# * -------- START THE OPERATION SYSTEM -------- *
     def start_os():
         root = tk.Tk()
 
         CoffeeOS(root)
         root.mainloop()
 
-# -------- ALLOWS USERS TO LOGOUT --------
+# * -------- ALLOWS USERS TO LOGOUT -------- *
     def logout(self):
         self.root.destroy()
 
@@ -183,7 +184,7 @@ class CoffeeOS:
         LoginWindow(login_root, self.start_os)
         login_root.mainloop()
 
-# -------- START THE CORE OF THE PROGRAM --------
+# * -------- START THE CORE OF THE PROGRAM -------- *
 def main_app():
     root = tk.Tk()
     app = CoffeeOS(root)
