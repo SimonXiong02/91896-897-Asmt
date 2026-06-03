@@ -19,4 +19,4 @@ def create_account(username, password):
 
     save_users(users)
 
-    return "Account created successfully!"
+    return
