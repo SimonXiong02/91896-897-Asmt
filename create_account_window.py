@@ -50,6 +50,7 @@ class CreateAccountWindow:
                 messagebox.showerror("Error", "Passwords do not match")
                 return
 
+            create_account(username, password)
             self.window.destroy()
 
         except ValueError as e:
