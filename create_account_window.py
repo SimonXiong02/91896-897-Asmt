@@ -1,3 +1,5 @@
+
+# * ---- The module that grant users the privege to create new accounts ---- *
 import tkinter as tk
 from tkinter import messagebox
 from User_accounts import create_account
@@ -50,6 +52,7 @@ class CreateAccountWindow:
                 messagebox.showerror("Error", "Passwords do not match")
                 return
 
+            # * ---- Closes the login menu while the create account window is open ---- *
             create_account(username, password)
             self.window.destroy()
 

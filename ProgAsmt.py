@@ -35,6 +35,7 @@ class CoffeeOS:
         notebook = ttk.Notebook(left)
         notebook.pack(fill="both", expand=True, padx=10, pady=10)
 
+        # * ---- Builds a Frame for the nessercery UI buttons ---- *
         for category, items in MENU.items():
             tab = tk.Frame(notebook, bg=BG)
             notebook.add(tab, text=category)
@@ -42,6 +43,7 @@ class CoffeeOS:
             row = 0
             col = 0
 
+            # * ---- Builds buttons for different items including their base prices ---- *
             for item, price in items.items():
                 btn = tk.Button(
                     tab,
@@ -169,7 +171,7 @@ class CoffeeOS:
         PrintReceipt.clear_cart(self.cart, self.tree, self.update_total)
 
 # * -------- START THE OPERATION SYSTEM -------- *
-    def start_os():
+    def start_os(self):
         root = tk.Tk()
 
         CoffeeOS(root)

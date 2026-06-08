@@ -5,9 +5,11 @@ from tkinter import messagebox
 from datetime import datetime
 import uuid
 
+# * ---- Imports the reportlab module's tools ---- *
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
+# * ---- Imports the appearance config ---- *
 from menu_config import *
 
 class CheckoutWindow:
@@ -64,6 +66,7 @@ class CheckoutWindow:
             messagebox.showwarning("Not Enough", "Customer has not paid enough")
             return
 
+        # * ---- Displays change in currency ---- *
         change = cash - self.total
 
         self.change_label.config(text=f"Change: ${change:.2f}")
@@ -82,6 +85,7 @@ class PrintReceipt:
             messagebox.showwarning("Empty", "No items in cart")
             return
 
+        # * ---- User specific uuid and date of receipt created ---- *
         order_id = str(uuid.uuid4())[:8]
 
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -106,6 +110,7 @@ class PrintReceipt:
             Spacer(1, 12)
         ]
 
+        # * ---- Main receipt details ---- *
         for item, qty, price in cart:
 
             content.append(Paragraph(f"{item} x{qty} - ${price:.2f}", styles["Normal"]))
