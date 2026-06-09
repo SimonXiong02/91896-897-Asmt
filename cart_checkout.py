@@ -25,6 +25,8 @@ class CheckoutWindow:
         self.window.attributes("-fullscreen", True)
         self.window.configure(bg=BG)
 
+        vcmd = (self.window.register(self.validate_cash), "%P")
+
         center_frame = tk.Frame(self.window, bg=BG, padx=50, pady=50)
         center_frame.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -35,12 +37,31 @@ class CheckoutWindow:
         self.cash_var.trace_add("write", self.update_change)
 
         tk.Label(center_frame, text="Cash Received", bg=BG, fg=FG, font=("Arial", 18)).pack()
-        tk.Entry(center_frame, textvariable=self.cash_var, bg="white", fg="black", font=("Arial", 20)).pack(pady=10, ipadx=30)
+        tk.Entry(center_frame, textvariable=self.cash_var, validate="key", validatecommand=vcmd, bg="white", fg="black", font=("Arial", 20)).pack(pady=10, ipadx=30)
 
         self.change_label = tk.Label(center_frame, text="Change: $0.00", bg=BG, fg=FG, font=("Arial", 15))
         self.change_label.pack(pady=10)
 
         tk.Button(center_frame, text="Process Payment", bg=ACCENT, command=self.process_payment, font=("Arial", 18)).pack(pady=20)
+
+    # * ---- Validates that users can't enter 0 as the first number ---- *
+    def validate_cash(self, value):
+
+        if value == "":
+            return True
+
+        try:
+            float(value)
+        except ValueError:
+            return False
+
+        if value.startswith("0") and len(value) > 1 and value[1] != ".":
+            return False
+
+        if value == "0":
+            return False
+
+        return True
 
     # * ---- updates the change ---- *
     def update_change(self, *args):

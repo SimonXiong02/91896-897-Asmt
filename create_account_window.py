@@ -14,6 +14,8 @@ class CreateAccountWindow:
         self.window.attributes("-fullscreen", True)
         self.window.configure(bg=BG)
 
+        vcmd = (self.window.register(self.validate_username), "%P")
+
         center_frame = tk.Frame(self.window, bg=BG, padx=40, pady=40)
         center_frame.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -24,15 +26,24 @@ class CreateAccountWindow:
         self.confirm_password_var = tk.StringVar()
 
         tk.Label(center_frame, text="Username", bg=BG, fg=ACCENT, font=("Arial", 16)).pack()
-        tk.Entry(center_frame, textvariable=self.username_var, bg=BG, fg=FG, font=("Arial", 20)).pack(pady=5)
+        tk.Entry(center_frame, textvariable=self.username_var, validate="key", validatecommand=vcmd, bg="white", fg="black", font=("Arial", 20)).pack(pady=5)
 
         tk.Label(center_frame, text="Password", bg=BG, fg=ACCENT, font=("Arial", 16)).pack()
-        tk.Entry(center_frame, textvariable=self.password_var, show="*", bg=BG ,fg=FG, font=("Arial", 20)).pack(pady=5)
+        tk.Entry(center_frame, textvariable=self.password_var, validate="key", validatecommand=vcmd, show="*", bg="white", fg="black", font=("Arial", 20)).pack(pady=5)
 
         tk.Label(center_frame, text="Confirm Password", bg=BG, fg=ACCENT, font=("Arial", 16)).pack(pady=5)
-        tk.Entry(center_frame, textvariable=self.confirm_password_var, show="*", bg=BG, fg=FG, font=("Arial", 20)).pack(pady=5)
+        tk.Entry(center_frame, textvariable=self.confirm_password_var, validate="key", validatecommand=vcmd, show="*", bg="white", fg="black", font=("Arial", 20)).pack(pady=5)
 
         tk.Button(center_frame, text="Create", bg=ACCENT, command=self.create, font=("Arial", 16)).pack(pady=20)
+
+    # * ---- Validates that users can't enter special symbols into the username textbox ---- *
+    def validate_username(self, value):
+
+        if value == "":
+            return True
+
+        return value.replace("_", "").isalnum()
+
 
     # * ---- Validates the accounts ---- *
     def create(self):
