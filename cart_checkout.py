@@ -4,13 +4,75 @@ import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
 import uuid
+import random
+import json
+import os
 
 # * ---- Imports the reportlab module's tools ---- *
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 
 # * ---- Imports the appearance config ---- *
 from menu_config import *
+
+# * ---- Creates the pdf inside the json ---- *
+def create_pdf_receipt(json_file):
+
+    with open(json_file, "r") as file:
+        data = json.load(file)
+
+    pdf_name = (
+        f"receipts/"
+        f"{data['username']}_"
+        f"{data['receipt_id']}.pdf"
+    )
+
+    doc = SimpleDocTemplate(pdf_name)
+
+    styles = getSampleStyleSheet()
+
+    content = []
+
+    content.append(Paragraph("CoffeeOS Receipt", styles["Title"]))
+
+    content.append(Spacer(1, 10))
+
+    info_table = Table(
+        [[
+            f"Receipt ID: {data['receipt_id']}",
+            f"GST: {data['gst']:.0f}"
+        ]]
+        )
+
+    content.append(info_table)
+
+    content.append(Paragraph(f"Cashier: {data['username']}", styles["Normal"]))
+
+    content.append(Paragraph(f"Created: {data['timestamp']}", styles["Normal"]))
+
+    content.append(Spacer(1, 10))
+
+    for item in data["items"]:
+
+        content.append(
+            Paragraph(
+                f"{item['item']} x{item['quantity']} - "
+                f"${item['line_total']:.2f}",
+                styles["Normal"]
+            )
+        )
+
+    content.append(Spacer(1, 10))
+
+    content.append(Paragraph(f"Total: ${data['total']:.2f}", styles["Normal"]))
+
+    content.append(Paragraph(f"Total (Tax included): ${data['total_plus_tax']:.2f}", styles["Heading2"]))
+
+    content.append(Paragraph(f"Cash Received: ${data['cash_received']:.2f}", styles["Normal"]))
+
+    content.append(Paragraph(f"Change: ${data['change']:.2f}", styles["Heading3"]))
+
+    doc.build(content)
 
 class CheckoutWindow:
     # * ---- Initializes the checkout window UI elements ---- *
@@ -92,6 +154,46 @@ class CheckoutWindow:
 
         self.change_label.config(text=f"Change: ${change:.2f}")
 
+        os.makedirs("receipts", exist_ok=True)
+
+        receipt_id = str(uuid.uuid4())[:8]
+
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+        receipt_data = {
+            "receipt_id": receipt_id,
+            "username": self.username,
+            "timestamp": timestamp,
+            "items": items,
+            "total": total,
+            "tax": tax,
+            "total(Tax included)": total_plus_tax,
+            "cash_received": cash,
+            "change": change
+        }
+
+        for item, qty, line_total in self.cart:
+
+            receipt_data["items"].append({
+                "item": item,
+                "quantity": qty,
+                "line_total": line_total
+            })
+
+        json_file = (
+            f"receipts/"
+            f"{timestamp}_{receipt_id}.json"
+        )
+
+        with open(json_file, "w") as file:
+            json.dump(
+                receipt_data,
+                file,
+                indent=4
+            )
+
+        create_pdf_receipt(json_file)
+
         messagebox.showinfo("Success", "Payment Complete")
 
         self.complete_callback()
@@ -111,7 +213,7 @@ class PrintReceipt:
 
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-        subtotal = 0
+        total = 0
 
         # * ---- Receipt label configuration ---- *
         pdf_file = (
@@ -136,19 +238,23 @@ class PrintReceipt:
 
             content.append(Paragraph(f"{item} x{qty} - ${price:.2f}", styles["Normal"]))
 
-            subtotal += price
+            total += price
 
-        tax = subtotal * TAX_RATE
+        tax = total * TAX_RATE
 
-        total = subtotal + tax
+        gst = random.randint(1, 900000)
+
+        total_plus_tax = total + tax
 
         # * ---- ordering the receipt structure ---- *
         content.append(Spacer(1, 12))
-        content.append(Paragraph(f"Subtotal: ${subtotal:.2f}", styles["Normal"]))
+        content.append(Paragraph(f"Total: ${total:.2f}", styles["Normal"]))
 
         content.append(Paragraph(f"Tax ({TAX_RATE*100:.0f}%): ${tax:.2f}", styles["Normal"]))
 
-        content.append(Paragraph(f"Total: ${total:.2f}", styles["Heading2"]))
+        content.append(Paragraph(f"GST: {gst:.0f}", styles["Normal"]))
+
+        content.append(Paragraph(f"Total(Tax included): ${total_plus_tax:.2f}", styles["Heading2"]))
 
         doc.build(content)
 
