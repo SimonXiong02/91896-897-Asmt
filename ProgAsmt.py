@@ -12,8 +12,9 @@ from menu_config import *
 # * ------- COFFEE SYSTEM ------- *
 class CoffeeOS:
     # * ---- Initializes the main program ---- *
-    def __init__(self, root):
+    def __init__(self, root, username):
         self.root = root
+        self.username = username
         self.root.title("Cafe OS System")
         self.root.attributes("-fullscreen", True)
         self.root.configure(bg=BG)
@@ -160,7 +161,7 @@ class CoffeeOS:
     # * ---- A checkout port update ---- *
     def checkout(self):
         total = sum(price for _, _, price in self.cart)
-        CheckoutWindow(self.root, total, self.complete_order)
+        CheckoutWindow(self.root, self.cart, self.username, total, self.complete_order)
 
     # * ---- Completes the full order ---- *
     def complete_order(self):
@@ -171,10 +172,11 @@ class CoffeeOS:
         PrintReceipt.clear_cart(self.cart, self.tree, self.update_total)
 
 # * -------- START THE OPERATION SYSTEM -------- *
-    def start_os(self):
+    def start_os(self, username):
         root = tk.Tk()
+        self.username = username
 
-        CoffeeOS(root)
+        CoffeeOS(root, username)
         root.mainloop()
 
 # * -------- ALLOWS USERS TO LOGOUT -------- *
@@ -187,9 +189,9 @@ class CoffeeOS:
         login_root.mainloop()
 
 # * -------- START THE CORE OF THE PROGRAM -------- *
-def main_app():
+def main_app(username):
     root = tk.Tk()
-    app = CoffeeOS(root)
+    app = CoffeeOS(root, username)
     root.mainloop()
 
 if __name__ == "__main__":

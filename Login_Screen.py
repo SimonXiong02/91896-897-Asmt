@@ -82,7 +82,7 @@ class LoginWindow:
             if user["username"] == username:
                 if verify_password(password, user["password_hash"]):
                     self.root.destroy()
-                    self.success_callback()
+                    self.success_callback(username)
                     return
 
         # * ---- Error Message ---- *
