@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
 import uuid
-from cart_checkout import PrintReceipt, CheckoutWindow
+from cart_checkout import CartControl, CheckoutWindow
 from Login_Screen import LoginWindow
 from menu_config import *
 
@@ -161,15 +161,15 @@ class CoffeeOS:
     # * ---- A checkout port update ---- *
     def checkout(self):
         total = sum(price for _, _, price in self.cart)
-        CheckoutWindow(self.root, self.cart, self.username, total, self.complete_order)
+        CheckoutWindow(self.root, self.cart, self.username, total, self.validate_item)
 
     # * ---- Completes the full order ---- *
-    def complete_order(self):
-        PrintReceipt.checkout(self.cart, self.clear_cart)
+    def validate_item(self):
+        CartControl.cart_validation(self.cart, self.clear_cart)
 
     # * ---- Add option for users to clear cart at their will ---- *
     def clear_cart(self):
-        PrintReceipt.clear_cart(self.cart, self.tree, self.update_total)
+        CartControl.clear_cart(self.cart, self.tree, self.update_total)
 
 # * -------- START THE OPERATION SYSTEM -------- *
     def start_os(self, username):

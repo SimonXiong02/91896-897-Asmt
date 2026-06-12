@@ -43,7 +43,7 @@ def create_pdf_receipt(receipt):
 
     content.append(info_table)
 
-    content.append(Paragraph(f"Cashier: {receipt['username']}", styles["Normal"]))
+    content.append(Paragraph(f"Customer: {receipt['username']}", styles["Normal"]))
 
     content.append(Paragraph(f"Created: {receipt['timestamp']}", styles["Normal"]))
 
@@ -226,11 +226,11 @@ class CheckoutWindow:
         self.complete_callback()
         self.window.destroy()
 
-# * ---- Class containing the essential code for generating receipts ---- *
-class PrintReceipt:
+# * ---- Class containing the essential code for validating and clearing cart ---- *
+class CartControl:
 
     @staticmethod
-    def checkout(cart, clear_callback):
+    def cart_validation(cart, clear_callback):
         if not cart:
             messagebox.showwarning("Empty", "No items in cart")
             return
