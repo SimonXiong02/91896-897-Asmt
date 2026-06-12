@@ -160,6 +160,12 @@ class CoffeeOS:
 
     # * ---- A checkout port update ---- *
     def checkout(self):
+
+        # * ---- Validates if the user had entered any items into the cart ---- *
+        if not self.cart:
+            messagebox.showwarning("Empty Cart", "Please add an item before checkout.")
+            return
+
         total = sum(price for _, _, price in self.cart)
         CheckoutWindow(self.root, self.cart, self.username, total, self.validate_item)
 

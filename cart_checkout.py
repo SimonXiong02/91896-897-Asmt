@@ -18,10 +18,11 @@ from menu_config import *
 # * ---- Creates the pdf inside the json ---- *
 def create_pdf_receipt(receipt):
 
+    with open("receipts/receipt_database.json", "r") as file:
+        data = json.load(file)
+
     pdf_name = (
-        f"receipts/"
-        f"{receipt['username']}_"
-        f"{receipt['receipt_id']}.pdf"
+        "receipts/receipt_history.pdf"
     )
 
     doc = SimpleDocTemplate(pdf_name)
@@ -30,48 +31,54 @@ def create_pdf_receipt(receipt):
 
     content = []
 
-    content.append(Paragraph("CoffeeOS Receipt", styles["Title"]))
+    content.append(Paragraph("CoffeeOS Receipt History", styles["Title"]))
 
-    content.append(Spacer(1, 10))
+    content.append(Spacer(1, 20))
 
-    info_table = Table(
-        [[
-            f"Receipt ID: {receipt['receipt_id']}",
-            f"GST: {receipt['gst']:.0f}"
-        ]]
-        )
+    for receipt in data["receipts"]:
 
-    content.append(info_table)
-
-    content.append(Paragraph(f"Customer: {receipt['username']}", styles["Normal"]))
-
-    content.append(Paragraph(f"Created: {receipt['timestamp']}", styles["Normal"]))
-
-    content.append(Spacer(1, 10))
-
-    for item in receipt["items"]:
-
-        content.append(
-            Paragraph(
-                f"{item['item']} x{item['quantity']} - "
-                f"${item['line_total']:.2f}",
-                styles["Normal"]
+        info_table = Table(
+            [[
+                f"Receipt ID: {receipt['receipt_id']}",
+                f"GST: {receipt['gst']:.0f}"
+            ]]
             )
-        )
 
-    content.append(Spacer(1, 10))
+        content.append(info_table)
 
-    content.append(Paragraph(f"Total: ${receipt['total']:.2f}", styles["Normal"]))
+        content.append(Paragraph(f"Customer: {receipt['username']}", styles["Normal"]))
 
-    content.append(Spacer(1, 10))
+        content.append(Paragraph(f"Created: {receipt['timestamp']}", styles["Normal"]))
 
-    content.append(Paragraph(f"Tax(15%): ${receipt['tax']:.2f}", styles["Normal"]))
+        content.append(Spacer(1, 5))
 
-    content.append(Paragraph(f"Total + Tax: ${receipt['total_plus_tax']:.2f}", styles["Heading2"]))
+        for item in receipt["items"]:
 
-    content.append(Paragraph(f"Cash Entered: ${receipt['cash_entered']:.2f}", styles["Normal"]))
+            content.append(
+                Paragraph(
+                    f"{item['item']} x{item['quantity']} - "
+                    f"${item['line_total']:.2f}",
+                    styles["Normal"]
+                )
+            )
 
-    content.append(Paragraph(f"Change: ${receipt['change']:.2f}", styles["Heading3"]))
+        content.append(Spacer(1, 10))
+
+        content.append(Paragraph(f"Total: ${receipt['total']:.2f}", styles["Normal"]))
+
+        content.append(Spacer(1, 10))
+
+        content.append(Paragraph(f"Tax(15%): ${receipt['tax']:.2f}", styles["Normal"]))
+
+        content.append(Paragraph(f"Total + Tax: ${receipt['total_plus_tax']:.2f}", styles["Heading2"]))
+
+        content.append(Paragraph(f"Cash Entered: ${receipt['cash_entered']:.2f}", styles["Normal"]))
+
+        content.append(Paragraph(f"Change: ${receipt['change']:.2f}", styles["Heading3"]))
+
+        content.append(Paragraph("-----------------------------------------------------------------------------------------------------------------------------------", styles["Normal"]))
+
+        content.append(Spacer(1, 15))
 
     doc.build(content)
 
@@ -134,7 +141,8 @@ class CheckoutWindow:
         try:
             cash = float(self.cash_var.get())
 
-            change = cash - self.total
+            # * ---- Display change in the checkout window ---- *
+            change = max(0, round(cash - self.total, 2))
 
             self.change_label.config(text=f"Change: ${change:.2f}")
 
@@ -153,10 +161,10 @@ class CheckoutWindow:
             messagebox.showwarning("Not Enough", "Customer has not paid enough")
             return
 
-        # * ---- Displays change in currency ---- *
-        change = round(cash - self.total, 2)
 
-        self.change_label.config(text=f"Change: ${change:.2f}")
+
+        # * ---- Displays change in currency in receipt ---- *
+        change = round(cash - self.total, 2)
 
         # * ---- Layout the json format ---- *
         os.makedirs("receipts", exist_ok=True)
@@ -231,10 +239,6 @@ class CartControl:
 
     @staticmethod
     def cart_validation(cart, clear_callback):
-        if not cart:
-            messagebox.showwarning("Empty", "No items in cart")
-            return
-
         clear_callback()
 
     # * ---- Clears Cart ---- *
