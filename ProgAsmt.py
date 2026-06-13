@@ -6,8 +6,8 @@ from datetime import datetime
 import uuid
 from cart_checkout import CartControl, CheckoutWindow
 from Login_Screen import LoginWindow
+from PIL import Image, ImageTk
 from menu_config import *
-
 
 # * ------- COFFEE SYSTEM ------- *
 class CoffeeOS:
@@ -15,6 +15,22 @@ class CoffeeOS:
     def __init__(self, root, username):
         self.root = root
         self.username = username
+
+        self.icons = {}
+
+        # * ---- Gets the icons from the menu_config module ---- *
+        for item, path in ICONS.items():
+            try:
+
+                image = Image.open(path)
+
+                image = image.resize((64, 64))
+
+                self.icons[item] = ImageTk.PhotoImage(image)
+
+            except Exception:
+                self.icons[item] = None
+
         self.root.title("Cafe OS System")
         self.root.attributes("-fullscreen", True)
         self.root.configure(bg=BG)
@@ -44,15 +60,17 @@ class CoffeeOS:
             row = 0
             col = 0
 
-            # * ---- Builds buttons for different items including their base prices ---- *
+            # * ---- Builds buttons for different items including their base prices and icons ---- *
             for item, price in items.items():
                 btn = tk.Button(
                     tab,
                     text=f"{item}\n${price}",
                     bg=CARD,
                     fg=FG,
-                    width=15,
-                    height=3,
+                    width=120,
+                    height=120,
+                    image=self.icons.get(item),
+                    compound="top",
                     command=lambda i=item, p=price: self.select_item(i, p)
                 )
                 btn.bind("<Button-3>", lambda event, i=item, p=price: self.show_price_preview(event, i , p))

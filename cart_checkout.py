@@ -125,6 +125,15 @@ class CheckoutWindow:
 
         try:
             float(value)
+
+            if "." in value:
+                decimal_point = value.split(".")[1]
+
+                if len (decimal_point) > 2:
+                    return False
+
+            return True
+
         except ValueError:
             return False
 
