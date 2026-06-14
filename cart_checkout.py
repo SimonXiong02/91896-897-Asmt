@@ -117,14 +117,21 @@ class CheckoutWindow:
 
         tk.Button(center_frame, text="Process Payment", bg=ACCENT, command=self.process_payment, font=("Arial", 18)).pack(pady=20)
 
-    # * ---- Validates that users can't enter 0 as the first number ---- *
+    # * ---- Validates that users can't enter 0 as the first number and cannot enter more than 2 decimal places ---- *
     def validate_cash(self, value):
+
 
         if value == "":
             return True
 
         try:
             float(value)
+
+            if value.startswith("0") and len(value) > 1 and value[1] != ".":
+                return False
+
+            if value == "0":
+                return False
 
             if "." in value:
                 decimal_point = value.split(".")[1]
@@ -137,13 +144,6 @@ class CheckoutWindow:
         except ValueError:
             return False
 
-        if value.startswith("0") and len(value) > 1 and value[1] != ".":
-            return False
-
-        if value == "0":
-            return False
-
-        return True
 
     # * ---- updates the change ---- *
     def update_change(self, *args):
