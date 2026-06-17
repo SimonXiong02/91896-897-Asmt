@@ -1,13 +1,13 @@
 
 # * ---- This is a coffee menu framework ---- *
-import tkinter as tk
-from tkinter import ttk, messagebox
+import tkinter as tk # * ---- Imports the GUI ---- *
+from tkinter import ttk, messagebox # * ---- Imports the message box and more ---- *
 from datetime import datetime
-import uuid
-from cart_checkout import CartControl, CheckoutWindow
+import uuid # * ---- Imports user id for every user ---- *
+from cart_checkout import CartControl, CheckoutWindow # * ---- Imports the necessary module for checkouting the items ---- *
 from Login_Screen import LoginWindow
-from PIL import Image, ImageTk
-from menu_config import *
+from PIL import Image, ImageTk # * ---- Imports the module that allows icons to be displayed ---- *
+from menu_config import * # * ---- Imports all the necessary things such as item prices, colour theme, tax rate, and more. ---- *
 
 # * ------- COFFEE SYSTEM ------- *
 class CoffeeOS:
@@ -103,9 +103,10 @@ class CoffeeOS:
         self.tree.pack(padx=10, pady=10)
 
         tk.Button(right, text="Checkout", bg=ACCENT, command=self.checkout).pack(fill="x", padx=10, pady=5)
-        tk.Button(right, text="Clear", command=self.clear_cart).pack(fill="x", padx=10)
+        tk.Button(right, text="Clear", bg=FG, command=self.clear_cart).pack(fill="x", padx=10, pady=5)
 
-        tk.Button(right, text="Logout", bg=ACCENT, fg="white", command=self.logout).pack(fill="x", padx=10, pady=5)
+        tk.Button(right, text="Logout", bg=ACCENT, fg="black", command=self.logout).pack(fill="x", padx=10, pady=5)
+        tk.Button(right, text="Quit", bg=ACCENT, fg="black", command=self.quit_program).pack(fill="x", padx=10, pady=5)
 
     # * ---- Give users the options to select their preferred orders ---- *
     def select_item(self, item, base_price):
@@ -185,6 +186,9 @@ class CoffeeOS:
             return
 
         total = sum(price for _, _, price in self.cart)
+
+        self.root.withdraw() # * ---- Hide the main menu while the checkout window is open ---- *
+
         CheckoutWindow(self.root, self.cart, self.username, total, self.validate_item)
 
     # * ---- Completes the full order ---- *
@@ -194,6 +198,10 @@ class CoffeeOS:
     # * ---- Add option for users to clear cart at their will ---- *
     def clear_cart(self):
         CartControl.clear_cart(self.cart, self.tree, self.update_total)
+
+# * -------- QUITS THE PROGRAM -------- *
+    def quit_program(self):
+        self.root.destroy()
 
 # * -------- START THE OPERATION SYSTEM -------- *
     def start_os(self, username):

@@ -82,6 +82,54 @@ def create_pdf_receipt(receipt):
 
     doc.build(content)
 
+# * ---- Displays receipt when the user finishes their order ---- *
+def show_receipt_window(receipt):
+
+    receipt_window = tk.Toplevel()
+
+    receipt_window.title("Receipt")
+
+    receipt_window.geometry("600x700")
+
+    text = tk.Text(receipt_window, font=("Arial", 11))
+
+    text.pack(fill="both", expand=True)
+
+    text.insert("end", "===== CoffeeOS Receipt =====\n\n")
+
+    text.insert("end", f"Receipt ID: {receipt['receipt_id']}\n")
+
+    text.insert("end", f"User: {receipt['username']}\n")
+
+    text.insert("end", f"Date: {receipt['timestamp']}\n\n")
+
+    text.insert("end", "Items\n")
+
+    text.insert("end", "-" * 40 + "\n")
+
+    for item in receipt["items"]:
+        text.insert(
+            "end",
+            f"{item['item']} "
+            f"x{item['quantity']} "
+            f"${item['line_total']:.2f}\n"
+        )
+
+    text.insert("end", "\n" + "-" * 40 + "\n")
+
+    text.insert("end", f"Total: ${receipt['total']:.2f}\n")
+
+    text.insert("end", f"Tax: ${receipt['tax']:.2f}\n")
+
+    text.insert("end", f"Total + Tax: ${receipt['total_plus_tax']:.2f}\n")
+
+    text.insert("end", f"Cash Received: ${receipt['cash_entered']:.2f}\n")
+
+    text.insert("end", f"Change: ${receipt['change']:.2f}\n")
+
+    text.config(state="disabled")
+
+
 class CheckoutWindow:
     # * ---- Initializes the checkout window UI elements ---- *
     def __init__(self, parent, cart, username, total, complete_callback):
@@ -93,6 +141,8 @@ class CheckoutWindow:
         self.complete_callback = complete_callback
 
         self.window = tk.Toplevel(parent)
+
+        self.window.protocol("WM_DELETE_WINDOW", self.close_checkout)
 
         self.window.title("Checkout")
         self.window.attributes("-fullscreen", True)
@@ -116,6 +166,13 @@ class CheckoutWindow:
         self.change_label.pack(pady=10)
 
         tk.Button(center_frame, text="Process Payment", bg=ACCENT, command=self.process_payment, font=("Arial", 18)).pack(pady=20)
+
+    # * ---- A function that completely closes the checkout window when the user finishes their purchase ---- *
+    def close_checkout(self):
+
+        self.parent.deiconify()
+
+        self.window.destroy()
 
     # * ---- Validates that users can't enter 0 as the first number and cannot enter more than 2 decimal places ---- *
     def validate_cash(self, value):
@@ -240,8 +297,10 @@ class CheckoutWindow:
 
         messagebox.showinfo("Success", "Payment Complete")
 
+        show_receipt_window(receipt)
+
         self.complete_callback()
-        self.window.destroy()
+        self.close_checkout()
 
 # * ---- Class containing the essential code for validating and clearing cart ---- *
 class CartControl:

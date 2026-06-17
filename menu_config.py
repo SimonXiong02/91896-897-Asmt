@@ -1,5 +1,7 @@
 
 # * ---- Button Icons ---- *
+# ! ---- Note: On some operating systems(OS) you might want to remove the "91896-897-Asmt" on beginning on every file entry. ---- !
+# ! ---- Otherwise it won't dislay the icons ---- !
 ICONS = {
     "Espresso": "91896-897-Asmt/icons/espresso.jpg",
     "Latte": "91896-897-Asmt/icons/latte.png",
