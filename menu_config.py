@@ -3,19 +3,19 @@
 # ! ---- Note: On some operating systems(OS) you might want to remove the "91896-897-Asmt" on beginning on every file entry. ---- !
 # ! ---- Otherwise it won't dislay the icons ---- !
 ICONS = {
-    "Espresso": "91896-897-Asmt/icons/espresso.jpg",
-    "Latte": "91896-897-Asmt/icons/latte.png",
-    "Cappuccino": "91896-897-Asmt/icons/cappuccino.png",
-    "Flat White": "91896-897-Asmt/icons/flat_white.jpg",
-    "Americano": "91896-897-Asmt/icons/americano.jpg",
-    "Chai Latte": "91896-897-Asmt/icons/chai_latte.jpg",
-    "Mocha": "91896-897-Asmt/icons/mocha.jpg",
-    "Green Tea": "91896-897-Asmt/icons/green_tea.jpg",
-    "Black Tea": "91896-897-Asmt/icons/black_tea.png",
-    "Jasmine Tea": "91896-897-Asmt/icons/jasmine_tea.jpg",
-    "Croissant": "91896-897-Asmt/icons/croissant.jpg",
-    "Muffin": "91896-897-Asmt/icons/muffin.png",
-    "Sandwich": "91896-897-Asmt/icons/sandwich.jpg"
+    "Espresso": "icons/espresso.jpg",
+    "Latte": "icons/latte.png",
+    "Cappuccino": "icons/cappuccino.png",
+    "Flat White": "icons/flat_white.jpg",
+    "Americano": "icons/americano.jpg",
+    "Chai Latte": "icons/chai_latte.jpg",
+    "Mocha": "icons/mocha.jpg",
+    "Green Tea": "icons/green_tea.jpg",
+    "Black Tea": "icons/black_tea.png",
+    "Jasmine Tea": "icons/jasmine_tea.jpg",
+    "Croissant": "icons/croissant.jpg",
+    "Muffin": "icons/muffin.png",
+    "Sandwich": "icons/sandwich.jpg"
 }
 
 # * ---- Theme ---- *
