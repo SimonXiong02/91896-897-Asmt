@@ -43,13 +43,13 @@ class CoffeeOS:
 
     # * ---- Initializes UI elements of the main program ---- *
     def build_ui(self):
-        left = tk.Frame(self.root, bg=BG)
-        left.pack(side="left", fill="both", expand=True)
+        Item_library = tk.Frame(self.root, bg=BG, width=40, height=80)
+        Item_library.pack(side="left", fill="both", expand=True)
 
-        right = tk.Frame(self.root, bg=CARD)
-        right.pack(side="right", fill="y")
+        button_frame = tk.Frame(self.root, bg=CARD)
+        button_frame.pack(side="right", fill="y")
 
-        notebook = ttk.Notebook(left)
+        notebook = ttk.Notebook(Item_library)
         notebook.pack(fill="both", expand=True, padx=10, pady=10)
 
         # * ---- Builds a Frame for the nessercery UI buttons ---- *
@@ -81,9 +81,6 @@ class CoffeeOS:
                     col = 0
                     row += 1
 
-        control_frame = tk.Frame(right, bg=CARD)
-        control_frame.pack(pady=5)
-
         self.size_var = tk.StringVar(value="Medium")
         self.qty_var = tk.IntVar(value=1)
 
@@ -92,25 +89,25 @@ class CoffeeOS:
             self.root,
             columns=("Item", "Size", "Qty", "Price"),
             show="headings",
-            height=15
+            height=15,
             )
 
         self.tree.heading("Item", text="Item")
         self.tree.heading("Size", text="Size")
         self.tree.heading("Qty", text="Qty")
         self.tree.heading("Price", text="Price")
-        self.tree.pack(padx=10, pady=10)
+        self.tree.pack(fill="x", padx=10, pady=10)
 
         # * ---- Binds the button for opening the display_price menu ---- *
         self.tree.bind("<Double-Button-1>", self.change_item_propertires)
 
         # * ---- Adds two buttons for checkout and clearing the items in cart ---- *
-        tk.Button(right, text="Checkout", bg=ACCENT, command=self.checkout).pack(fill="x", padx=10, pady=5)
-        tk.Button(right, text="Clear", bg=FG, command=self.clear_cart).pack(fill="x", padx=10, pady=5)
+        tk.Button(button_frame, text="Checkout", bg=ACCENT, command=self.checkout).pack(fill="x", padx=10, pady=5)
+        tk.Button(button_frame, text="Clear", bg=FG, command=self.clear_cart).pack(fill="x", padx=10, pady=5)
 
         # * ---- Adds another two buttons for loging out and quiting the program ---- *
-        tk.Button(right, text="Logout", bg=ACCENT, fg="black", command=self.logout).pack(fill="x", padx=10, pady=5)
-        tk.Button(right, text="Quit", bg=ACCENT, fg="black", command=self.quit_program).pack(fill="x", padx=10, pady=5)
+        tk.Button(button_frame, text="Logout", bg=ACCENT, fg="black", command=self.logout).pack(fill="x", padx=10, pady=5)
+        tk.Button(button_frame, text="Quit", bg=ACCENT, fg="black", command=self.quit_program).pack(fill="x", padx=10, pady=5)
 
     # * ---- Gives users the freedom the preview the price of each item by their size variants ---- *
     def display_price(self, item, price):

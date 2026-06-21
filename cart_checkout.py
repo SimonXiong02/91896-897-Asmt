@@ -43,7 +43,7 @@ def create_pdf_receipt(receipt):
                 f"Receipt ID: {receipt['receipt_id']}",
                 f"GST Number: {receipt['gst']:.0f}"
             ]],
-            colWidths=[450, 450])
+            colWidths=[250, 250])
 
         info_table.setStyle(
             TableStyle([
@@ -60,15 +60,28 @@ def create_pdf_receipt(receipt):
 
         content.append(Spacer(1, 5))
 
-        for item in receipt["items"]:
+        format_keys = [
+        ["Item", "Qty", "Total"]
+        ]
 
-            content.append(
-                Paragraph(
-                    f"{item['item']} x{item['quantity']} - "
-                    f"${item['line_total']:.2f}",
-                    styles["Normal"]
-                )
-            )
+        for item in receipt["items"]:
+            format_keys.append([
+                item["item"],
+                str(item["quantity"]),
+                f"${item['line_total']:.2f}"
+            ])
+
+        format_paper = Table(format_keys, colWidths=[180, 80, 50, 80])
+
+        format_paper.setStyle(
+            TableStyle([
+                ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("FONTNAME", (0, 0), (-1, 0), "Times-Roman")
+            ])
+        )
+
+        content.append(format_paper)
 
         content.append(Spacer(1, 10))
 
