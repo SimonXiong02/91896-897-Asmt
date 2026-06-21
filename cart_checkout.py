@@ -9,8 +9,9 @@ import json
 import os
 
 # * ---- Imports the reportlab module's tools ---- *
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
 
 # * ---- Imports the appearance config ---- *
 from menu_config import *
@@ -40,9 +41,16 @@ def create_pdf_receipt(receipt):
         info_table = Table(
             [[
                 f"Receipt ID: {receipt['receipt_id']}",
-                f"GST: {receipt['gst']:.0f}"
-            ]]
-            )
+                f"GST Number: {receipt['gst']:.0f}"
+            ]],
+            colWidths=[450, 450])
+
+        info_table.setStyle(
+            TableStyle([
+                ("BOX", (0, 0), (-1, -1), 1, colors.black),
+                ("BACKGROUND", (0, 0), (-1, -1), colors.whitesmoke)
+            ])
+        )
 
         content.append(info_table)
 
@@ -64,26 +72,30 @@ def create_pdf_receipt(receipt):
 
         content.append(Spacer(1, 10))
 
-        content.append(Paragraph(f"Total: ${receipt['total']:.2f}", styles["Normal"]))
+        receipt_details = Table([
+            ["Total", f"${receipt['total']:.2f}"],
+            ["Tax (15%)", f"${receipt['tax']:.2f}"],
+            ["Total (Tax Included)", f"${receipt['total_plus_tax']:.2f}"],
+            ["Cash Received", f"${receipt['cash_entered']:.2f}"],
+            ["Change", f"${max(receipt['change'], 0):.2f}"]
+        ],
+        colWidths=[180, 120])
 
-        content.append(Spacer(1, 10))
+        receipt_details.setStyle(
+            TableStyle([
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("FONTNAME", (0, 0), (-1, -1), "Times-Roman")
+            ])
+        )
 
-        content.append(Paragraph(f"Tax(15%): ${receipt['tax']:.2f}", styles["Normal"]))
-
-        content.append(Paragraph(f"Total + Tax: ${receipt['total_plus_tax']:.2f}", styles["Heading2"]))
-
-        content.append(Paragraph(f"Cash Entered: ${receipt['cash_entered']:.2f}", styles["Normal"]))
-
-        content.append(Paragraph(f"Change: ${receipt['change']:.2f}", styles["Heading3"]))
-
-        content.append(Paragraph("-----------------------------------------------------------------------------------------------------------------------------------", styles["Normal"]))
-
-        content.append(Spacer(1, 15))
+        content.append(receipt_details)
 
     doc.build(content)
 
 # * ---- Displays receipt when the user finishes their order ---- *
 def show_receipt_window(receipt):
+
+    content = []
 
     receipt_window = tk.Toplevel()
 
@@ -107,13 +119,29 @@ def show_receipt_window(receipt):
 
     text.insert("end", "-" * 40 + "\n")
 
+    format_keys = [
+        ["Item", "Size", "Qty", "Total"]
+        ]
+
     for item in receipt["items"]:
-        text.insert(
-            "end",
-            f"{item['item']} "
-            f"x{item['quantity']} "
-            f"${item['line_total']:.2f}\n"
-        )
+        format_keys.append([
+            item["item"],
+            item["size"],
+            str(item["quantity"]),
+            f"${item['line_total']:.2f}"
+        ])
+
+    format_paper = Table(format_keys, colWidths=[180, 80, 50, 80])
+
+    format_paper.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+            ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            ("FONTNAME", (0, 0), (-1, 0), "Times-Roman")
+        ])
+    )
+
+    content.append(format_paper)
 
     text.insert("end", "\n" + "-" * 40 + "\n")
 
@@ -262,10 +290,11 @@ class CheckoutWindow:
             "change": change
         }
 
-        for item, qty, line_total in self.cart:
+        for item, size, qty, line_total in self.cart:
 
             receipt["items"].append({
                 "item": item,
+                "size": size,
                 "quantity": qty,
                 "line_total": line_total
             })

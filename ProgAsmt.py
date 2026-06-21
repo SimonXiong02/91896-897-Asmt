@@ -71,9 +71,9 @@ class CoffeeOS:
                     height=120,
                     image=self.icons.get(item),
                     compound="top",
-                    command=lambda i=item, p=price: self.select_item(i, p)
+                    command=lambda i=item, p=price: self.display_price(i, p)
                 )
-                btn.bind("<Button-3>", lambda event, i=item, p=price: self.show_price_preview(event, i , p))
+                btn.bind("<Button-3>", lambda event, i=item, p=price: self.display_price(event, i , p))
                 btn.grid(row=row, column=col, padx=10, pady=10)
 
                 col += 1
@@ -87,90 +87,135 @@ class CoffeeOS:
         self.size_var = tk.StringVar(value="Medium")
         self.qty_var = tk.IntVar(value=1)
 
-        ttk.Combobox(control_frame, textvariable=self.size_var, values=list(SIZES.keys()), state="readonly", width=10).grid(row=0, column=0, padx=5)
-        ttk.Spinbox(control_frame, from_=1, to=100, textvariable=self.qty_var, validate="key", state="readonly",width=5).grid(row=0, column=1, padx=5)
-
+        # * ---- Creates a item tree for listing the item's properties ---- *
         self.tree = ttk.Treeview(
             self.root,
-            columns=("Item", "Qty", "Price"),
+            columns=("Item", "Size", "Qty", "Price"),
             show="headings",
             height=15
             )
 
         self.tree.heading("Item", text="Item")
+        self.tree.heading("Size", text="Size")
         self.tree.heading("Qty", text="Qty")
         self.tree.heading("Price", text="Price")
         self.tree.pack(padx=10, pady=10)
 
+        # * ---- Binds the button for opening the display_price menu ---- *
+        self.tree.bind("<Double-Button-1>", self.change_item_propertires)
+
+        # * ---- Adds two buttons for checkout and clearing the items in cart ---- *
         tk.Button(right, text="Checkout", bg=ACCENT, command=self.checkout).pack(fill="x", padx=10, pady=5)
         tk.Button(right, text="Clear", bg=FG, command=self.clear_cart).pack(fill="x", padx=10, pady=5)
 
+        # * ---- Adds another two buttons for loging out and quiting the program ---- *
         tk.Button(right, text="Logout", bg=ACCENT, fg="black", command=self.logout).pack(fill="x", padx=10, pady=5)
         tk.Button(right, text="Quit", bg=ACCENT, fg="black", command=self.quit_program).pack(fill="x", padx=10, pady=5)
 
-    # * ---- Give users the options to select their preferred orders ---- *
-    def select_item(self, item, base_price):
-
-        size = self.size_var.get()
-        qty = self.qty_var.get()
-
-        added_price = (
-            base_price *
-            SIZES[size] *
-            qty
-        )
-
-        item_name = f"{item} ({size})"
-
-        # * ---- Check if item already exists ---- *
-        for index, (cart_item, cart_qty, cart_price) in enumerate(self.cart):
-
-            if cart_item == item_name:
-
-                new_qty = cart_qty + qty
-                new_price = cart_price + added_price
-
-                self.cart[index] = (
-                    cart_item,
-                    new_qty,
-                    new_price
-                )
-
-                # * ---- Check item prices ---- *
-                for row in self.tree.get_children():
-
-                    values = self.tree.item(row)["values"]
-
-                    if values[0] == item_name:
-
-                        self.tree.item(row, values=(item_name, new_qty, f"${new_price:.2f}"))
-                        break
-
-                self.update_total()
-                return
-
-        # * ---- Add new item if not found ---- *
-        self.cart.append((item_name, qty, added_price))
-        self.tree.insert("", "end", values=(item_name, qty, f"${added_price:.2f}"))
-
-        self.update_total()
-
     # * ---- Gives users the freedom the preview the price of each item by their size variants ---- *
-    def show_price_preview(self, event, item, base_price):
+    def display_price(self, item, price):
+
+        # * ---- Define and set the menu ---- *
         menu = tk.Menu(self.root, tearoff=0)
 
-        small = (base_price * SIZES["Small"])
-        medium = (base_price * SIZES["Medium"])
-        large = (base_price * SIZES["Large"])
+        # * ---- Defines the sizes ---- *
+        small = (price * SIZES["Small"])
+        medium = (price * SIZES["Medium"])
+        large = (price * SIZES["Large"])
 
+        # * ---- Adds a space between the title and the items ---- *
         menu.add_command(label=f"{item}")
         menu.add_separator()
 
-        menu.add_command(label=f"Small  - ${small:.2f}")
-        menu.add_command(label=f"Medium  - ${medium:.2f}")
-        menu.add_command(label=f"Large  - ${large:.2f}")
+        # * ---- Layout configuration ---- *
+        menu.add_command(label=f"Small  - ${small:.2f}", command=lambda: self.item_selection(item, "Small", small))
+        menu.add_command(label=f"Medium  - ${medium:.2f}", command=lambda: self.item_selection(item, "Medium", medium))
+        menu.add_command(label=f"Large  - ${large:.2f}", command=lambda: self.item_selection(item, "Large", large))
 
-        menu.tk_popup(event.x_root, event.y_root)
+        # * ---- Enables the window pop ---- *
+        menu.tk_popup(self.root.winfo_pointerx(), self.root.winfo_pointery())
+
+    # * ---- Allows user to add items in different sizes ---- *
+    def item_selection(self, item, size, price):
+
+        for i, (cart_item, cart_size, qty, total) in enumerate(self.cart):
+            if cart_item == item and cart_size == size:
+
+                self.cart[i] = (
+                    cart_item,
+                    cart_size,
+                    qty + 1,
+                    total + price
+                )
+
+                self.refresh_cart()
+
+                return
+
+        self.cart.append((item, size, 1, price))
+
+        self.refresh_cart()
+
+    # * ---- Refreshes the cart and values ---- *
+    def refresh_cart(self):
+
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
+        for item, size, qty, total in self.cart:
+            self.tree.insert("", "end", values=(item, size, qty, f"{total:.2f}"))
+
+        total_price = sum(total for item, size, qty, total in self.cart)
+
+        self.total_label.config(text=f"Total: ${total_price:.2f}")
+
+    # * ---- Grants users the priveilage to edit their item's quantity and size ---- *
+    def change_item_propertires(self, event):
+
+        selection = self.tree.selection()
+
+        if not selection:
+            return
+
+        item_id = selection[0]
+        index = self.tree.index(item_id)
+
+        item, size, qty, total = self.cart[index]
+
+        edit_window = tk.Toplevel(self.root)
+        edit_window.title("Edit Item")
+        edit_window.geometry("500x300")
+
+        tk.Label(edit_window, text=item, font=("Arial", 16, "bold")).pack(pady=5)
+        tk.Label(edit_window, text="Size:").pack()
+
+        size_var = tk.StringVar(value=size)
+        size_combo = ttk.Combobox(edit_window, textvariable=size_var, values=list(SIZES.keys()), state="readonly")
+        size_combo.pack(pady=5)
+
+        tk.Label(edit_window, text=item, font=("Arial", 16, "bold")).pack(pady=10)
+        tk.Label(edit_window, text="Quantity:").pack()
+
+        qty_var = tk.IntVar(value=qty)
+        qty_spin = tk.Spinbox(edit_window, from_=1, to=99, textvariable=qty_var, width=5)
+        qty_spin.pack(pady=5)
+
+        # * ---- Saves the user changes ---- *
+        def save_changes():
+
+            new_qty = int(qty_var.get())
+            new_size = size_var.get()
+
+            together_price = total / (qty * SIZES[size])
+
+            new_total = together_price * SIZES[new_size] * new_qty
+
+            self.cart[index] = (item, new_size, new_qty, new_total)
+            self.refresh_cart()
+
+            edit_window.destroy()
+
+        tk.Button(edit_window, text="Save", command=save_changes).pack(pady=10)
 
     # * ---- Updates the total amount of currency ---- *
     def update_total(self):
@@ -185,7 +230,7 @@ class CoffeeOS:
             messagebox.showwarning("Empty Cart", "Please add an item before checkout.")
             return
 
-        total = sum(price for _, _, price in self.cart)
+        total = sum(price for _, _, _, price in self.cart)
 
         self.root.withdraw() # * ---- Hide the main menu while the checkout window is open ---- *
 
