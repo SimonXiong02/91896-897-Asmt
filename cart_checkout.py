@@ -54,6 +54,8 @@ def create_pdf_receipt(receipt):
 
         content.append(info_table)
 
+        content.append(Spacer(1, 20))
+
         content.append(Paragraph(f"Customer: {receipt['username']}", styles["Normal"]))
 
         content.append(Paragraph(f"Created: {receipt['timestamp']}", styles["Normal"]))
@@ -61,17 +63,19 @@ def create_pdf_receipt(receipt):
         content.append(Spacer(1, 5))
 
         format_keys = [
-        ["Item", "Qty", "Total"]
+        ["Item", "Size", "Qty", "Total"]
         ]
 
         for item in receipt["items"]:
             format_keys.append([
                 item["item"],
+                str(item.get('size', 'N/A')),
                 str(item["quantity"]),
                 f"${item['line_total']:.2f}"
             ])
 
-        format_paper = Table(format_keys, colWidths=[180, 80, 50, 80])
+        format_paper = Table(format_keys, colWidths=[90, 80, 50, 80])
+        format_paper.hAlign = "LEFT"
 
         format_paper.setStyle(
             TableStyle([
@@ -92,7 +96,9 @@ def create_pdf_receipt(receipt):
             ["Cash Received", f"${receipt['cash_entered']:.2f}"],
             ["Change", f"${max(receipt['change'], 0):.2f}"]
         ],
-        colWidths=[180, 120])
+        colWidths=[170, 130])
+
+        receipt_details.hAlign = "LEFT"
 
         receipt_details.setStyle(
             TableStyle([
@@ -103,12 +109,12 @@ def create_pdf_receipt(receipt):
 
         content.append(receipt_details)
 
+        content.append(Spacer(1, 20))
+
     doc.build(content)
 
 # * ---- Displays receipt when the user finishes their order ---- *
 def show_receipt_window(receipt):
-
-    content = []
 
     receipt_window = tk.Toplevel()
 
@@ -132,29 +138,16 @@ def show_receipt_window(receipt):
 
     text.insert("end", "-" * 40 + "\n")
 
-    format_keys = [
-        ["Item", "Size", "Qty", "Total"]
-        ]
 
     for item in receipt["items"]:
-        format_keys.append([
-            item["item"],
-            item["size"],
-            str(item["quantity"]),
-            f"${item['line_total']:.2f}"
-        ])
+        text.insert(
+            "end",
+            f"{item['item']} "
+            f"({item['size']}) "
+            f"x{item['quantity']} "
+            f"${item['line_total']:.2f} "
+            )
 
-    format_paper = Table(format_keys, colWidths=[180, 80, 50, 80])
-
-    format_paper.setStyle(
-        TableStyle([
-            ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
-            ("GRID", (0, 0), (-1, -1), 1, colors.black),
-            ("FONTNAME", (0, 0), (-1, 0), "Times-Roman")
-        ])
-    )
-
-    content.append(format_paper)
 
     text.insert("end", "\n" + "-" * 40 + "\n")
 

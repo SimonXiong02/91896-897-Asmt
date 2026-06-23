@@ -43,7 +43,7 @@ class CoffeeOS:
 
     # * ---- Initializes UI elements of the main program ---- *
     def build_ui(self):
-        Item_library = tk.Frame(self.root, bg=BG, width=40, height=80)
+        Item_library = tk.Frame(self.root, bg=BG)
         Item_library.pack(side="left", fill="both", expand=True)
 
         button_frame = tk.Frame(self.root, bg=CARD)
@@ -57,11 +57,14 @@ class CoffeeOS:
             tab = tk.Frame(notebook, bg=BG)
             notebook.add(tab, text=category)
 
-            row = 0
-            col = 0
+            max_cols = 6
 
             # * ---- Builds buttons for different items including their base prices and icons ---- *
-            for item, price in items.items():
+            for index, (item, price) in enumerate(items.items()):
+
+                row = index // max_cols
+                col = index % max_cols
+
                 btn = tk.Button(
                     tab,
                     text=f"{item}\n${price}",
@@ -74,8 +77,9 @@ class CoffeeOS:
                     command=lambda i=item, p=price: self.display_price(i, p)
                 )
                 btn.bind("<Button-3>", lambda event, i=item, p=price: self.display_price(event, i , p))
-                btn.grid(row=row, column=col, padx=10, pady=10)
+                btn.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
 
+                # * ---- Sets the grid layout ---- *
                 col += 1
                 if col > 2:
                     col = 0
@@ -96,7 +100,7 @@ class CoffeeOS:
         self.tree.heading("Size", text="Size")
         self.tree.heading("Qty", text="Qty")
         self.tree.heading("Price", text="Price")
-        self.tree.pack(fill="x", padx=10, pady=10)
+        self.tree.pack(fill="both", padx=10, pady=10)
 
         # * ---- Binds the button for opening the display_price menu ---- *
         self.tree.bind("<Double-Button-1>", self.change_item_propertires)
