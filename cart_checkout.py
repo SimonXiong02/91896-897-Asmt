@@ -48,13 +48,13 @@ def create_pdf_receipt(receipt):
         info_table.setStyle(
             TableStyle([
                 ("BOX", (0, 0), (-1, -1), 1, colors.black),
-                ("BACKGROUND", (0, 0), (-1, -1), colors.whitesmoke)
+                ("BACKGROUND", (0, 0), (-1, -1), colors.lightgrey)
             ])
         )
 
         content.append(info_table)
 
-        content.append(Spacer(1, 20))
+        content.append(Spacer(1, 5))
 
         content.append(Paragraph(f"Customer: {receipt['username']}", styles["Normal"]))
 
@@ -109,7 +109,7 @@ def create_pdf_receipt(receipt):
 
         content.append(receipt_details)
 
-        content.append(Spacer(1, 20))
+        content.append(Spacer(1, 80))
 
     doc.build(content)
 

@@ -198,7 +198,7 @@ class CoffeeOS:
         tk.Label(edit_window, text="Quantity:").pack()
 
         qty_var = tk.IntVar(value=qty)
-        qty_spin = tk.Spinbox(edit_window, from_=1, to=99, textvariable=qty_var, width=5)
+        qty_spin = tk.Spinbox(edit_window, from_=1, to=99, textvariable=qty_var, width=5, state="readonly")
         qty_spin.pack(pady=5)
 
         # * ---- Saves the user changes ---- *
