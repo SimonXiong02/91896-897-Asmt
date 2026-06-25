@@ -57,11 +57,16 @@ class CoffeeOS:
             tab = tk.Frame(notebook, bg=BG)
             notebook.add(tab, text=category)
 
-            button_size = 300
+            # * ---- Sets the grid layout ---- *
+            button_size = 120
+            pad_size = 10
 
-            window_width = self.root.winfo_screenmmwidth()
+            window_width = tab.winfo_width()
 
-            max_cols = max(3, window_width // button_size)
+            if window_width <= 10:
+                window_width = self.root.winfo_width()
+
+            max_cols = max(10, window_width // (button_size + pad_size * 2))
 
             # * ---- Builds buttons for different items including their base prices and icons ---- *
             for index, (item, price) in enumerate(items.items()):
@@ -74,26 +79,27 @@ class CoffeeOS:
                     text=f"{item}\n${price}",
                     bg=CARD,
                     fg=FG,
+                    width=button_size,
+                    height=button_size,
                     image=self.icons.get(item),
                     compound="top",
                     command=lambda i=item, p=price: self.display_price(i, p)
                 )
                 btn.bind("<Button-3>", lambda event, i=item, p=price: self.display_price(event, i , p))
-                btn.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
+                btn.grid(row=row, column=col, padx=pad_size, pady=pad_size, sticky="nsew")
 
-                # * ---- Sets the grid layout ---- *
                 # col += 1
                 # if col > 2:
                 #     col = 0
                 #     row += 1
 
-                button_row = (len(items) + max_cols - 1) // max_cols
+                # button_row = (len(items) + max_cols - 1) // max_cols
 
-                for col in range(max_cols):
-                    tab.grid_columnconfigure(col, weight=1)
+                # for col in range(max_cols):
+                #     tab.grid_columnconfigure(col, weight=1)
 
-                for row in range(button_row):
-                    tab.grid_rowconfigure(row, weight=1)
+                # for row in range(button_row):
+                #     tab.grid_rowconfigure(row, weight=1)
 
         self.size_var = tk.StringVar(value="Medium")
         self.qty_var = tk.IntVar(value=1)

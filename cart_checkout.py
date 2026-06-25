@@ -36,8 +36,10 @@ def create_pdf_receipt(receipt):
 
     content.append(Spacer(1, 10))
 
+    # * ---- The main loop for printing out receipts ---- *
     for receipt in data["receipts"]:
 
+        # * ---- This line sets the key values of the first table, which is the Receipt ID and the GST Number ---- *
         info_table = Table(
             [[
                 f"Receipt ID: {receipt['receipt_id']}",
@@ -63,6 +65,7 @@ def create_pdf_receipt(receipt):
 
         content.append(Spacer(1, 5))
 
+        # * ---- Defines the key values of the second graph ---- *
         format_keys = [
         ["Item", "Size", "Qty", "Total"]
         ]
