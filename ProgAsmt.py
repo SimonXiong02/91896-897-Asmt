@@ -61,12 +61,12 @@ class CoffeeOS:
             button_size = 120
             pad_size = 10
 
-            window_width = tab.winfo_width()
+            window_width = self.root.winfo_width()
 
-            if window_width <= 10:
+            if window_width <= 6:
                 window_width = self.root.winfo_width()
 
-            max_cols = max(10, window_width // (button_size + pad_size * 2))
+            max_cols = max(6, window_width // (button_size + pad_size * 2))
 
             # * ---- Builds buttons for different items including their base prices and icons ---- *
             for index, (item, price) in enumerate(items.items()):
@@ -116,7 +116,18 @@ class CoffeeOS:
         self.tree.heading("Size", text="Size")
         self.tree.heading("Qty", text="Qty")
         self.tree.heading("Price", text="Price")
-        self.tree.pack(fill="both", padx=10, pady=10)
+
+        self.scrollbar = ttk.Scrollbar(
+            self.root,
+            orient="horizontal",
+            command=self.tree.xview
+        )
+
+        self.tree.configure(
+            xscrollcommand=self.scrollbar.set
+        )
+        self.tree.pack(fill="both", padx=10, pady=10, expand=True)
+        self.scrollbar.pack(side="bottom", fill="x")
 
         # * ---- Binds the button for opening the display_price menu ---- *
         self.tree.bind("<Double-Button-1>", self.change_item_propertires)
