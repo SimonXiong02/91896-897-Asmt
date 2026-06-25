@@ -57,7 +57,11 @@ class CoffeeOS:
             tab = tk.Frame(notebook, bg=BG)
             notebook.add(tab, text=category)
 
-            max_cols = 6
+            button_size = 300
+
+            window_width = self.root.winfo_screenmmwidth()
+
+            max_cols = max(3, window_width // button_size)
 
             # * ---- Builds buttons for different items including their base prices and icons ---- *
             for index, (item, price) in enumerate(items.items()):
@@ -70,8 +74,6 @@ class CoffeeOS:
                     text=f"{item}\n${price}",
                     bg=CARD,
                     fg=FG,
-                    width=120,
-                    height=120,
                     image=self.icons.get(item),
                     compound="top",
                     command=lambda i=item, p=price: self.display_price(i, p)
@@ -80,10 +82,18 @@ class CoffeeOS:
                 btn.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
 
                 # * ---- Sets the grid layout ---- *
-                col += 1
-                if col > 2:
-                    col = 0
-                    row += 1
+                # col += 1
+                # if col > 2:
+                #     col = 0
+                #     row += 1
+
+                button_row = (len(items) + max_cols - 1) // max_cols
+
+                for col in range(max_cols):
+                    tab.grid_columnconfigure(col, weight=1)
+
+                for row in range(button_row):
+                    tab.grid_rowconfigure(row, weight=1)
 
         self.size_var = tk.StringVar(value="Medium")
         self.qty_var = tk.IntVar(value=1)
