@@ -34,7 +34,7 @@ def create_pdf_receipt(receipt):
 
     content.append(Paragraph("CoffeeOS Receipt History", styles["Title"]))
 
-    content.append(Spacer(1, 20))
+    content.append(Spacer(1, 10))
 
     for receipt in data["receipts"]:
 
@@ -43,7 +43,8 @@ def create_pdf_receipt(receipt):
                 f"Receipt ID: {receipt['receipt_id']}",
                 f"GST Number: {receipt['gst']:.0f}"
             ]],
-            colWidths=[250, 250])
+            colWidths=[190, 250]
+        )
 
         info_table.setStyle(
             TableStyle([
@@ -54,7 +55,7 @@ def create_pdf_receipt(receipt):
 
         content.append(info_table)
 
-        content.append(Spacer(1, 5))
+        content.append(Spacer(1, 10))
 
         content.append(Paragraph(f"Customer: {receipt['username']}", styles["Normal"]))
 
@@ -109,7 +110,11 @@ def create_pdf_receipt(receipt):
 
         content.append(receipt_details)
 
-        content.append(Spacer(1, 80))
+        content.append(Spacer(1, 5))
+
+        content.append(Paragraph("-----------------------------------------------------------------------------------------------------------------------------------"))
+
+        content.append(Spacer(1, 5))
 
     doc.build(content)
 
