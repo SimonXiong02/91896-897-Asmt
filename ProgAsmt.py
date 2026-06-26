@@ -88,19 +88,6 @@ class CoffeeOS:
                 btn.bind("<Button-3>", lambda event, i=item, p=price: self.display_price(event, i , p))
                 btn.grid(row=row, column=col, padx=pad_size, pady=pad_size, sticky="nsew")
 
-                # col += 1
-                # if col > 2:
-                #     col = 0
-                #     row += 1
-
-                # button_row = (len(items) + max_cols - 1) // max_cols
-
-                # for col in range(max_cols):
-                #     tab.grid_columnconfigure(col, weight=1)
-
-                # for row in range(button_row):
-                #     tab.grid_rowconfigure(row, weight=1)
-
         self.size_var = tk.StringVar(value="Medium")
         self.qty_var = tk.IntVar(value=1)
 

@@ -144,20 +144,22 @@ def show_receipt_window(receipt):
 
     text.insert("end", "Items\n")
 
-    text.insert("end", "-" * 40 + "\n")
+    text.insert("end", "Item                       Size       Qty       Total\n")
+
+    text.insert("end", "-" * 60 + "\n")
 
 
     for item in receipt["items"]:
         text.insert(
             "end",
-            f"{item['item']} "
-            f"({item['size']}) "
-            f"x{item['quantity']} "
-            f"${item['line_total']:.2f} "
+            f"{item['item']:<20}"
+            f"{item['size']:<10}"
+            f"x{item['quantity']:<5}"
+            f"${item['line_total']:.2f} \n"
             )
 
 
-    text.insert("end", "\n" + "-" * 40 + "\n")
+    text.insert("end", "\n" + "-" * 60 + "\n")
 
     text.insert("end", f"Total: ${receipt['total']:.2f}\n")
 
